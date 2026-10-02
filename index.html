@@ -238,7 +238,7 @@ const LV=[
  {en:'Advanced',bn:'উন্নত',ic:'👑',min:3000,d:'ইংরেজিতে দক্ষ হও',col:'yellow'}
 ];
 const UNITS=[['🍎','ফল','Fruits','৬টি শব্দ','blue'],['👨‍👩‍👧','পরিবার','Family','৮টি শব্দ','green'],['🏫','স্কুল','School','১০টি শব্দ','yellow'],['🍚','খাবার','Food','৯টি শব্দ','purple'],['⏰','দিনের রুটিন','Daily Routine','৮টি শব্দ','blue']];
-const BADGES=[['🥇','প্রথম পাঠ','একটি পাঠ শেষ করো','lesson'],['🔥','৭ দিনের স্ট্রিক','টানা ৭ দিন শেখো','streak'],['📚','১০টি শব্দ','১০টি শব্দ শেখো','words'],['🎯','কুইজ মাস্টার','MCQ-তে পুরো নম্বর','quiz'],['🎙️','ভালো বক্তা','স্পিকিংয়ে ৮০+ পাও','speak'],['🎧','মনোযোগী শ্রোতা','শোনার প্রশ্নে ভালো করো','listen'],['🏆','ডেইলি চ্যালেঞ্জ','আজকের চ্যালেঞ্জ শেষ করো','daily'],['✏️','ব্যাকরণ শিক্ষার্থী','৩টি ব্যাকরণ বিষয় শেষ করো','gram']];
+const BADGES=[['🥇','First Lesson','Complete one lesson','lesson'],['🔥','7-Day Streak','Learn 7 days in a row','streak'],['📚','10 Words','Learn 10 words','words'],['🎯','Quiz Master','Full marks in a quiz','quiz'],['🎙️','Good Speaker','Score 80+ in speaking','speak'],['🎧','Active Listener','Do well in listening','listen'],['🏆','Daily Challenge','Finish the daily challenge','daily'],['✏️','Grammar Learner','Finish 3 grammar topics','gram']];
 
 /* ---------- state ---------- */
 const store={get(){try{return JSON.parse(localStorage.getItem('heylearn')||'{}')}catch(e){return{}}},set(o){try{localStorage.setItem('heylearn',JSON.stringify(o))}catch(e){}}};
@@ -257,7 +257,7 @@ function toast(m){const old=$('.toast');if(old)old.remove();const d=document.cre
 const isDark=()=>{const t=document.documentElement.dataset.theme;return t==='dark'||(!t&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)};
 const lvl=()=>{let k=0;LV.forEach((l,i)=>{if(P.xp>=l.min)k=i});return k};
 const lvPct=()=>{const k=lvl();return k>=3?100:Math.round((P.xp-LV[k].min)/(LV[k+1].min-LV[k].min)*100)};
-function addXp(n){const b=lvl();P.xp+=n;save();if(lvl()>b)toast('🎉 নতুন লেভেল: '+LV[lvl()].bn)}
+function addXp(n){const b=lvl();P.xp+=n;save();if(lvl()>b)toast('🎉 New level: '+LV[lvl()].en)}
 function go(s,o={}){if(o.reset)S.stack=[];else if(!o.replace)S.stack.push(S.screen);S.screen=s;render()}
 function back(){S.screen=S.stack.pop()||'home';render()}
 const mkq=(head,opts,ans,o={})=>{const idx=shuffle(opts.map((x,i)=>i));return Object.assign({head,opts:idx.map(i=>opts[i]),ans:idx.indexOf(ans)},o)};
@@ -268,10 +268,10 @@ const fillQs=n=>shuffle(FILL).slice(0,n).map(f=>mkq(`<p class="en" style="font-s
 function launch(kind,rep){
  const o={replace:!!rep};
  if(kind==='mcq'){S.qz={kind,title:'MCQ',qs:vocabQs(shuffle(W).slice(0,6)),i:0,score:0,picked:null};go('qz',o)}
- else if(kind==='fill'){S.qz={kind,title:'ঘর পূরণ',qs:fillQs(6),i:0,score:0,picked:null};go('qz',o)}
- else if(kind==='daily'){S.qz={kind,title:'ডেইলি চ্যালেঞ্জ',qs:shuffle([...vocabQs(shuffle(W).slice(0,3)),...fillQs(2)]),i:0,score:0,picked:null};go('qz',o)}
- else if(kind==='lesson'){S.qz={kind,title:'অনুশীলন',qs:vocabQs(shuffle(FR)),i:0,score:0,picked:null};go('qz',o)}
- else if(kind==='listenq'){S.qz={kind,title:'শোনার প্রশ্ন',qs:LQ.map(q=>mkq(`<p class="en" style="font-size:20px;font-weight:700">${q[0]}</p>`,q[1],q[2])),i:0,score:0,picked:null};go('qz',o)}
+ else if(kind==='fill'){S.qz={kind,title:'Fill in the Blanks',qs:fillQs(6),i:0,score:0,picked:null};go('qz',o)}
+ else if(kind==='daily'){S.qz={kind,title:'Daily Challenge',qs:shuffle([...vocabQs(shuffle(W).slice(0,3)),...fillQs(2)]),i:0,score:0,picked:null};go('qz',o)}
+ else if(kind==='lesson'){S.qz={kind,title:'Practice',qs:vocabQs(shuffle(FR)),i:0,score:0,picked:null};go('qz',o)}
+ else if(kind==='listenq'){S.qz={kind,title:'Listening Quiz',qs:LQ.map(q=>mkq(`<p class="en" style="font-size:20px;font-weight:700">${q[0]}</p>`,q[1],q[2])),i:0,score:0,picked:null};go('qz',o)}
  else if(kind==='gq'){const g=G.find(x=>x.k===S.gt);S.qz={kind,title:g.en,qs:g.q.map(q=>mkq(`<p class="en" style="font-size:21px;font-weight:700">${q[0].replace('___','<u>&nbsp;&nbsp;&nbsp;&nbsp;</u>')}</p>`,q[1],q[2])),i:0,score:0,picked:null};go('qz',o)}
  else if(kind==='match'){const L=shuffle(W).slice(0,5);S.mt={L,R:shuffle(L),sel:null,done:[],bad:null,moves:0};go('match',o)}
  else if(kind==='sent'){S.sm={qs:shuffle(SM),i:0,score:0,tries:0,state:null};smInit();go('sent',o)}
@@ -318,7 +318,7 @@ function mic(){
 /* ---------- views ---------- */
 const NAVMAP={home:'home',learn:'learn',vocab:'learn',grammar:'learn',practice:'practice',speak:'practice',listen:'practice',progress:'progress',profile:'profile',level:'profile',badges:'profile'};
 const ICON={home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',learn:'<path d="M4 4h12a3 3 0 0 1 3 3v13H7a3 3 0 0 1-3-3z"/><path d="M8 9h7"/>',practice:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/>',progress:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',profile:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'};
-const TABS=[['home','হোম'],['learn','শিখি'],['practice','অনুশীলন'],['progress','অগ্রগতি'],['profile','প্রোফাইল']];
+const TABS=[['home','Home'],['learn','Learn'],['practice','Practice'],['progress','Progress'],['profile','Profile']];
 const nav=a=>`<nav class="nav">${TABS.map(([k,l])=>`<button data-a="tab" data-k="${k}" class="${a===k?'on':''}"><svg viewBox="0 0 24 24">${ICON[k]}</svg>${l}</button>`).join('')}</nav>`;
 const head=(t,r='')=>`<div class="hd"><button class="back" data-a="back" aria-label="পিছনে">←</button><h1 class="h2">${t}</h1><div>${r}</div></div>`;
 const topbar=(step,pct)=>`<div class="row"><button class="back" data-a="back" aria-label="পিছনে">←</button><div class="bar"><i style="width:${pct}%"></i></div><span class="sub en">${step}</span></div>`;
@@ -327,51 +327,51 @@ const pctOf=(a,b)=>Math.round(a/b*100);
 const ring=(p,l,sm)=>`<div class="ring ${sm?'sm':''}" style="--p:${p}"><div><span class="en">${p}%${l?`<small>${l}</small>`:''}</span></div></div>`;
 
 const V={
-splash:()=>`<div class="splash"><div class="bubble">Hey</div><h1>HeyLearn</h1><p>ছবি দেখে, শুনে, বলে ইংরেজি শিখি</p><button class="btn" data-a="tab" data-k="home">শুরু করি</button></div>`,
+splash:()=>`<div class="splash"><div class="bubble">Hey</div><h1>HeyLearn</h1><p>ছবি দেখে, শুনে, বলে ইংরেজি শিখি</p><button class="btn" data-a="tab" data-k="home">Get Started</button></div>`,
 
 home:()=>{const w=W[new Date().getDate()%W.length];const mk=P.marks.includes(w.en);
  return `<div class="view">
- <div class="row sp"><div><h1 class="h1">শুভ সকাল 👋</h1><p class="sub">আজও একটু একটু করে এগোই</p></div><button class="back" data-a="toast" data-m="আজ কোনো নতুন নোটিফিকেশন নেই" aria-label="নোটিফিকেশন">🔔</button></div>
+ <div class="row sp"><div><h1 class="h1">${(h=>h<12?'Good Morning':h<17?'Good Afternoon':'Good Evening')(new Date().getHours())} 👋</h1><p class="sub">আজও একটু একটু করে এগোই</p></div><button class="back" data-a="toast" data-m="আজ কোনো নতুন নোটিফিকেশন নেই" aria-label="নোটিফিকেশন">🔔</button></div>
  <div class="grid2 mt">
-  <div class="card"><div class="row"><span style="font-size:26px">🔥</span><div><p class="sub">টানা শেখা</p><p class="h2">৭ দিন</p></div></div><div class="dotw">${[1,1,1,1,1,1,1].map(x=>`<i class="on"></i>`).join('')}</div></div>
-  <div class="card row"><div>${ring(lvPct(),'',1)}</div><div><p class="sub">লেভেল প্রগ্রেস</p><p class="sub">${P.xp} XP</p></div></div>
+  <div class="card"><div class="row"><span style="font-size:26px">🔥</span><div><p class="sub">Learning Streak</p><p class="h2">7 days</p></div></div><div class="dotw">${[1,1,1,1,1,1,1].map(x=>`<i class="on"></i>`).join('')}</div></div>
+  <div class="card row"><div>${ring(lvPct(),'',1)}</div><div><p class="sub">Level Progress</p><p class="sub">${P.xp} XP</p></div></div>
  </div>
  <button class="tile mt" data-a="lesson" style="background:linear-gradient(135deg,#3F7DF5,#6FA3FF);color:#fff">
-  <span style="color:#DCE8FF">আজকের পাঠ</span><b style="font-size:21px;margin:2px 0">ফল · Fruits 🍎</b><span style="color:#DCE8FF">৬টি নতুন শব্দ · প্রায় ১০ মিনিট</span>
+  <span style="color:#DCE8FF">Today's Lesson</span><b style="font-size:21px;margin:2px 0">ফল · Fruits 🍎</b><span style="color:#DCE8FF">6 new words · about 10 min</span>
   <div class="bar mt" style="background:rgba(255,255,255,.3)"><i style="width:${P.flags.lesson?100:15}%;background:#fff"></i></div></button>
  <div class="card mt">
-  <div class="row sp"><span class="chip" style="background:var(--yellow-s);color:var(--yellow)">আজকের শব্দ</span><div class="row" style="gap:8px"><button class="mini ${mk?'on':''}" data-a="mark" data-w="${w.en}" aria-label="সেভ">${mk?'★':'☆'}</button><button class="mini" data-a="say" data-t="${w.en}" aria-label="উচ্চারণ">🔊</button></div></div>
+  <div class="row sp"><span class="chip" style="background:var(--yellow-s);color:var(--yellow)">Word of the Day</span><div class="row" style="gap:8px"><button class="mini ${mk?'on':''}" data-a="mark" data-w="${w.en}" aria-label="সেভ">${mk?'★':'☆'}</button><button class="mini" data-a="say" data-t="${w.en}" aria-label="উচ্চারণ">🔊</button></div></div>
   <div class="row mt"><div class="pic2">${w.e}</div><div><p class="word" style="font-size:28px">${w.en}</p><p class="sub en">${w.ip} · ${w.pr}</p><p class="bn2">${w.bn}</p></div></div>
   <p class="en mt">${w.ex}</p></div>
  <div class="grid2 mt">
-  <button class="tile c-purple" data-a="go" data-s="vocab"><div class="ico" style="background:var(--card)">📚</div><b class="mt">শব্দভান্ডার</b><span>নতুন শব্দ শিখি</span></button>
-  <button class="tile c-green" data-a="go" data-s="grammar"><div class="ico" style="background:var(--card)">✏️</div><b class="mt">ব্যাকরণ</b><span>ভিত্তি মজবুত করি</span></button>
-  <button class="tile c-yellow" data-a="go" data-s="speak"><div class="ico" style="background:var(--card)">🎙️</div><b class="mt">স্পিকিং</b><span>জোরে বলে দেখি</span></button>
-  <button class="tile c-blue" data-a="go" data-s="listen"><div class="ico" style="background:var(--card)">🎧</div><b class="mt">লিসেনিং</b><span>শুনে উত্তর দিই</span></button>
+  <button class="tile c-purple" data-a="go" data-s="vocab"><div class="ico" style="background:var(--card)">📚</div><b class="mt">Vocabulary</b><span>নতুন শব্দ শিখি</span></button>
+  <button class="tile c-green" data-a="go" data-s="grammar"><div class="ico" style="background:var(--card)">✏️</div><b class="mt">Grammar</b><span>ভিত্তি মজবুত করি</span></button>
+  <button class="tile c-yellow" data-a="go" data-s="speak"><div class="ico" style="background:var(--card)">🎙️</div><b class="mt">Speaking</b><span>জোরে বলে দেখি</span></button>
+  <button class="tile c-blue" data-a="go" data-s="listen"><div class="ico" style="background:var(--card)">🎧</div><b class="mt">Listening</b><span>শুনে উত্তর দিই</span></button>
  </div>
- <button class="tile c-yellow mt" data-a="daily"><div class="row"><div class="ico" style="background:var(--card)">🏆</div><div style="flex:1"><b>ডেইলি চ্যালেঞ্জ</b><span>৫টি প্রশ্ন · +৫০ XP পর্যন্ত</span></div><span>›</span></div></button>
- <div class="card mt row" style="opacity:.8"><div class="ico c-purple">🤖</div><div><b>AI টিউটর</b><p class="sub">শীঘ্রই আসছে — প্রশ্ন করলেই বাংলায় বুঝিয়ে দেবে</p></div></div>
+ <button class="tile c-yellow mt" data-a="daily"><div class="row"><div class="ico" style="background:var(--card)">🏆</div><div style="flex:1"><b>Daily Challenge</b><span>৫টি প্রশ্ন · +৫০ XP পর্যন্ত</span></div><span>›</span></div></button>
+ <div class="card mt row" style="opacity:.8"><div class="ico c-purple">🤖</div><div><b>AI Tutor</b><p class="sub">শীঘ্রই আসছে — প্রশ্ন করলেই বাংলায় বুঝিয়ে দেবে</p></div></div>
  </div>${nav('home')}`},
 
-learn:()=>`<div class="view"><h1 class="h1">শিখি</h1><p class="sub">যেখান থেকে খুশি শুরু করো</p>
+learn:()=>`<div class="view"><h1 class="h1">Learn</h1><p class="sub">যেখান থেকে খুশি শুরু করো</p>
  <button class="tile mt c-blue" data-a="lesson"><div class="row"><div class="ico" style="background:var(--card)">🍎</div><div style="flex:1"><b>ফল · Fruits</b><span>ছবি → শব্দ → অনুশীলন → গল্প → লেখা</span></div><span>›</span></div></button>
- <h2 class="h2 mt2">শেখার ক্ষেত্র</h2>
+ <h2 class="h2 mt2">Skill Areas</h2>
  <div class="grid2 mt">${[['📚','শব্দভান্ডার','Vocabulary','vocab','purple'],['✏️','ব্যাকরণ','Grammar','grammar','green'],['🎧','শোনা','Listening','listen','blue'],['🎙️','বলা','Speaking','speak','yellow'],['📖','গল্প','Story','story','purple'],['✍️','লেখা','Writing','writing','green']].map(t=>`
-  <button class="tile c-${t[4]}" data-a="go" data-s="${t[3]}"><div class="ico" style="background:var(--card)">${t[0]}</div><b class="mt">${t[1]}</b><span class="en">${t[2]}</span></button>`).join('')}</div>
- <h2 class="h2 mt2">সব পাঠ</h2>
- ${UNITS.map((u,i)=>`<button class="card mt" ${i?'':'data-a="lesson"'} style="width:100%;border:0;text-align:left;font:inherit;color:var(--ink);opacity:${i?.55:1};cursor:${i?'default':'pointer'}"><div class="row"><div class="ico c-${u[4]}">${u[0]}</div><div style="flex:1"><b>${u[1]} <span class="en sub">· ${u[2]}</span></b><p class="sub">${u[3]}</p></div><span>${i?'🔒':(P.flags.lesson?'✅':'›')}</span></div></button>`).join('')}
+  <button class="tile c-${t[4]}" data-a="go" data-s="${t[3]}"><div class="ico" style="background:var(--card)">${t[0]}</div><b class="mt">${t[2]}</b><span>${t[1]}</span></button>`).join('')}</div>
+ <h2 class="h2 mt2">All Lessons</h2>
+ ${UNITS.map((u,i)=>`<button class="card mt" ${i?'':'data-a="lesson"'} style="width:100%;border:0;text-align:left;font:inherit;color:var(--ink);opacity:${i?.55:1};cursor:${i?'default':'pointer'}"><div class="row"><div class="ico c-${u[4]}">${u[0]}</div><div style="flex:1"><b>${u[2]} <span class="sub">· ${u[1]}</span></b><p class="sub">${u[3]}</p></div><span>${i?'🔒':(P.flags.lesson?'✅':'›')}</span></div></button>`).join('')}
  </div>${nav('learn')}`,
 
 vocab:()=>{const f=S.vf;const l=W.filter(w=>f==='all'||(f==='learned'?P.learned.includes(w.en):!P.learned.includes(w.en)));
- return `<div class="view">${head('শব্দভান্ডার','<button class="back" data-a="search-focus" aria-label="খুঁজি">🔍</button>')}
- ${chips([['all','সব'],['learned','শেখা'],['todo','শিখতে হবে'],['saved','সেভ করা']],f,'vf')}
+ return `<div class="view">${head('Vocabulary','<button class="back" data-a="search-focus" aria-label="খুঁজি">🔍</button>')}
+ ${chips([['all','All'],['learned','Learned'],['todo','To Learn'],['saved','Saved']],f,'vf')}
  <input id="vs" class="search" placeholder="শব্দ খোঁজো…" aria-label="শব্দ খোঁজো">
  ${(f==='saved'?W.filter(w=>P.marks.includes(w.en)):l).map(w=>{const mk=P.marks.includes(w.en);return `<div class="card vcard mt" data-w="${w.en} ${w.bn}"><div class="row" style="align-items:flex-start">
   <div style="flex:1"><div class="row" style="gap:8px"><b class="en" style="font-size:20px">${w.en}</b><button class="mini" data-a="say" data-t="${w.en}" aria-label="উচ্চারণ">🔊</button></div>
   <p class="sub en">${w.ip} · ${w.pr}</p><p class="bn2">${w.bn}</p><p class="en mt" style="font-size:15px">${w.ex}</p><p class="sub">${w.exb}</p>
   ${P.learned.includes(w.en)?'<span class="chip c-green" style="color:var(--green);margin-top:8px">✓ শেখা</span>':''}</div>
   <div style="display:flex;flex-direction:column;gap:8px;align-items:center"><div class="pic2">${w.e}</div><button class="mini ${mk?'on':''}" data-a="mark" data-w="${w.en}" aria-label="সেভ">${mk?'★':'☆'}</button></div></div></div>`}).join('')||`<div class="card mt" style="text-align:center"><p class="sub">এখানে এখনো কিছু নেই।</p></div>`}
- <div class="stick"><button class="btn" data-a="flash">⚡ ফ্ল্যাশকার্ড মোড</button></div></div>${nav('learn')}`},
+ <div class="stick"><button class="btn" data-a="flash">⚡ Flashcard Mode</button></div></div>${nav('learn')}`},
 
 flash:()=>{const z=S.fl,w=z.list[z.i];
  return `<div class="view">${topbar(`${z.i+1}/${z.list.length}`,(z.i)/z.list.length*100)}
@@ -380,9 +380,9 @@ flash:()=>{const z=S.fl,w=z.list[z.i];
   :`<div class="pic">${w.e}</div><p class="word">${w.en}</p><p class="sub mt">অর্থ দেখতে কার্ডে ট্যাপ করো</p>`}</button>
  <div class="stick"><div class="row"><button class="spk" data-a="say" data-t="${w.en}" aria-label="উচ্চারণ">🔊</button><button class="btn ghost" data-a="flno" style="flex:1">আবার দেখব</button><button class="btn green" data-a="flyes" style="flex:1">জানি ✓</button></div></div></div>`},
 
-grammar:()=>`<div class="view">${head('ব্যাকরণ')}
+grammar:()=>`<div class="view">${head('Grammar')}
  <div class="grid2">${G.map(g=>`<button class="tile c-${g.col}" data-a="gtopic" data-k="${g.k}"><div class="ico" style="background:var(--card)">${g.e}</div><b class="mt en">${g.en}</b><span>${g.bn}${P.gdone.includes(g.k)?' · ✅':''}</span></button>`).join('')}</div>
- <div class="card mt row"><div class="ico c-green">📘</div><div style="flex:1"><b>শেখা হয়েছে ${P.gdone.length}/${G.length}</b><div class="bar mt" style="margin-top:8px"><i style="width:${pctOf(P.gdone.length,G.length)}%;background:var(--green)"></i></div></div></div>
+ <div class="card mt row"><div class="ico c-green">📘</div><div style="flex:1"><b>Completed ${P.gdone.length}/${G.length}</b><div class="bar mt" style="margin-top:8px"><i style="width:${pctOf(P.gdone.length,G.length)}%;background:var(--green)"></i></div></div></div>
  </div>${nav('learn')}`,
 
 gtopic:()=>{const g=G.find(x=>x.k===S.gt);
@@ -390,17 +390,17 @@ gtopic:()=>{const g=G.find(x=>x.k===S.gt);
  <div class="card"><span class="chip c-${g.col}">${g.sub}</span><p class="mt">${g.rule}</p><div class="formula">${g.f}</div></div>
  <h2 class="h2 mt2">উদাহরণ</h2>
  ${g.ex.map(x=>`<div class="card mt row"><div style="flex:1"><p class="en" style="font-size:18px;font-weight:700">${x[0]}</p><p class="sub">${x[1]}</p></div><button class="mini" data-a="say" data-t="${esc(x[0].replace(/"/g,''))}" aria-label="শুনি">🔊</button></div>`).join('')}
- <div class="stick"><button class="btn" data-a="gprac">অনুশীলন করি</button></div></div>`},
+ <div class="stick"><button class="btn" data-a="gprac">Practice</button></div></div>`},
 
-practice:()=>{const f=S.gf;const T=[['mcq','❓','MCQ','জ্ঞান যাচাই করো','blue'],['fill','✏️','ঘর পূরণ','বাক্য সম্পূর্ণ করো','yellow'],['match','🧩','শব্দ মেলানো','ইংরেজি ↔ বাংলা','green'],['sent','🔤','বাক্য গঠন','শব্দ সাজিয়ে বাক্য বানাও','purple']];
+practice:()=>{const f=S.gf;const T=[['mcq','❓','MCQ Quiz','জ্ঞান যাচাই করো','blue'],['fill','✏️','Fill in the Blanks','বাক্য সম্পূর্ণ করো','yellow'],['match','🧩','Word Match','ইংরেজি ↔ বাংলা','green'],['sent','🔤','Sentence Builder','শব্দ সাজিয়ে বাক্য বানাও','purple']];
  const show=T.filter(t=>f==='all'||f===t[0]);
- return `<div class="view"><h1 class="h1">কুইজ ও গেমস</h1><p class="sub">খেলতে খেলতে শিখি</p>
- ${chips([['all','সব'],['mcq','MCQ'],['fill','ঘর পূরণ'],['match','মেলানো'],['sent','বাক্য']],f,'gf')}
+ return `<div class="view"><h1 class="h1">Quiz &amp; Games</h1><p class="sub">খেলতে খেলতে শিখি</p>
+ ${chips([['all','All'],['mcq','MCQ'],['fill','Fill'],['match','Match'],['sent','Sentence']],f,'gf')}
  <div class="grid2">${show.map(t=>`<button class="tile c-${t[4]}" data-a="${t[0]==='mcq'?'mcq':t[0]==='fill'?'fill':t[0]==='match'?'match':'sent'}"><div class="ico" style="background:var(--card)">${t[1]}</div><b class="mt">${t[2]}</b><span>${t[3]}</span></button>`).join('')}</div>
- <button class="tile c-yellow mt" data-a="daily"><div class="row"><div class="ico" style="background:var(--card)">🏆</div><div style="flex:1"><b>ডেইলি চ্যালেঞ্জ</b><span>আজকের চ্যালেঞ্জ শেষ করে পুরস্কার জিতো</span></div><span>${P.flags.daily?'✅':'›'}</span></div></button>
- ${f==='all'?`<h2 class="h2 mt2">দক্ষতা অনুশীলন</h2><div class="grid2 mt">
-  <button class="tile c-blue" data-a="go" data-s="listen"><div class="ico" style="background:var(--card)">🎧</div><b class="mt">লিসেনিং</b><span>কথোপকথন শুনি</span></button>
-  <button class="tile c-green" data-a="go" data-s="speak"><div class="ico" style="background:var(--card)">🎙️</div><b class="mt">স্পিকিং</b><span>বলে স্কোর পাই</span></button></div>`:''}
+ <button class="tile c-yellow mt" data-a="daily"><div class="row"><div class="ico" style="background:var(--card)">🏆</div><div style="flex:1"><b>Daily Challenge</b><span>আজকের চ্যালেঞ্জ শেষ করে পুরস্কার জিতো</span></div><span>${P.flags.daily?'✅':'›'}</span></div></button>
+ ${f==='all'?`<h2 class="h2 mt2">Skills Practice</h2><div class="grid2 mt">
+  <button class="tile c-blue" data-a="go" data-s="listen"><div class="ico" style="background:var(--card)">🎧</div><b class="mt">Listening</b><span>কথোপকথন শুনি</span></button>
+  <button class="tile c-green" data-a="go" data-s="speak"><div class="ico" style="background:var(--card)">🎙️</div><b class="mt">Speaking</b><span>বলে স্কোর পাই</span></button></div>`:''}
  </div>${nav('practice')}`},
 
 qz:()=>{const z=S.qz,q=z.qs[z.i],p=z.picked;const cls=i=>p===null?'':(i===q.ans?'ok':(i===p?'no':''));
@@ -409,35 +409,35 @@ qz:()=>{const z=S.qz,q=z.qs[z.i],p=z.picked;const cls=i=>p===null?'':(i===q.ans?
  const ok=p===q.ans;
  return `<div class="view">${topbar(`${z.i+1}/${z.qs.length}`,(z.i+(p!==null?1:0))/z.qs.length*100)}
  <div class="card flash mt2">${q.head}</div>${body}
- ${p!==null?`<div class="card mt row" style="background:${ok?'var(--green-s)':'var(--red-s)'}"><span style="font-size:26px">${ok?'🎉':'💡'}</span><div><b>${ok?'দারুণ, ঠিক হয়েছে!':'আরেকটু হলেই হতো'}</b><p class="sub en">${q.note||''}</p></div></div><div class="stick"><button class="btn" data-a="nextq">${z.i<z.qs.length-1?'পরের প্রশ্ন':'ফলাফল দেখি'}</button></div>`:''}</div>`},
+ ${p!==null?`<div class="card mt row" style="background:${ok?'var(--green-s)':'var(--red-s)'}"><span style="font-size:26px">${ok?'🎉':'💡'}</span><div><b>${ok?'Correct! Well done!':'Almost there!'}</b><p class="sub en">${q.note||''}</p></div></div><div class="stick"><button class="btn" data-a="nextq">${z.i<z.qs.length-1?'পরের প্রশ্ন':'See Results'}</button></div>`:''}</div>`},
 
 match:()=>{const m=S.mt;
  return `<div class="view">${topbar(`${m.done.length}/5`,m.done.length/5*100)}
- <h1 class="h2 mt2">শব্দ মেলাও</h1><p class="sub">বাঁ দিকের ইংরেজি শব্দ ধরে ডান দিকের বাংলা অর্থ বেছে নাও</p>
+ <h1 class="h2 mt2">Match the Words</h1><p class="sub">বাঁ দিকের ইংরেজি শব্দ ধরে ডান দিকের বাংলা অর্থ বেছে নাও</p>
  <div class="grid2 mt"><div>${m.L.map((w,i)=>`<button class="opt en ${m.done.includes(w.en)?'ok':(m.sel===i?'sel':(m.bad&&m.bad[0]===i?'no':''))}" data-a="ml" data-i="${i}" ${m.done.includes(w.en)?'disabled':''}>${w.e} ${w.en}</button>`).join('')}</div>
  <div>${m.R.map((w,j)=>`<button class="opt ${m.done.includes(w.en)?'ok':(m.bad&&m.bad[1]===j?'no':'')}" data-a="mr" data-j="${j}" ${m.done.includes(w.en)?'disabled':''}>${w.bn}</button>`).join('')}</div></div></div>`},
 
 sent:()=>{const m=S.sm,q=m.qs[m.i];const ch=m.chosen.map(id=>m.pool.find(x=>x.id===id));const rest=m.pool.filter(x=>!m.chosen.includes(x.id));
  return `<div class="view">${topbar(`${m.i+1}/${m.qs.length}`,m.i/m.qs.length*100)}
- <h1 class="h2 mt2">বাক্যটি সাজাও</h1><div class="card mt"><p class="bn2">${q[1]}</p></div>
+ <h1 class="h2 mt2">Build the Sentence</h1><div class="card mt"><p class="bn2">${q[1]}</p></div>
  <div class="slot mt ${m.state||''}">${ch.map(x=>`<button class="wd" data-a="smdel" data-id="${x.id}" ${m.state==='ok'?'disabled':''}>${x.w}</button>`).join('')}</div>
  <div class="mt">${rest.map(x=>`<button class="wd" data-a="smadd" data-id="${x.id}" ${m.state==='ok'?'disabled':''}>${x.w}</button>`).join('')}</div>
  ${m.state==='bad'?`<p class="mt" style="color:var(--red)">এখনো ঠিক হয়নি — শব্দের ক্রম আবার দেখো।</p>`:''}
- ${m.state==='ok'?`<p class="mt" style="color:var(--green)"><b>সুন্দর! 🎉</b></p><div class="stick"><button class="btn" data-a="smnext">${m.i<m.qs.length-1?'পরের বাক্য':'ফলাফল দেখি'}</button></div>`
-  :`<div class="stick"><button class="btn" data-a="smchk" ${ch.length?'':'disabled'}>চেক করি</button></div>`}</div>`},
+ ${m.state==='ok'?`<p class="mt" style="color:var(--green)"><b>Well done! 🎉</b></p><div class="stick"><button class="btn" data-a="smnext">${m.i<m.qs.length-1?'Next Sentence':'See Results'}</button></div>`
+  :`<div class="stick"><button class="btn" data-a="smchk" ${ch.length?'':'disabled'}>Check</button></div>`}</div>`},
 
-result:()=>{const r=S.res,ratio=r.score/r.total;const t=ratio>=.8?'দারুণ করেছো!':ratio>=.5?'ভালো চেষ্টা!':'আরেকবার চেষ্টা করি!';
+result:()=>{const r=S.res,ratio=r.score/r.total;const t=ratio>=.8?'Excellent work!':ratio>=.5?'Good effort!':'Try again!';
  return `<div class="view" style="text-align:center"><div class="confetti mt2">${ratio>=.5?'🎉':'💪'}</div><h1 class="h1 mt">${t}</h1>
  <div class="stars mt">${ratio>=.8?'⭐⭐⭐':ratio>=.5?'⭐⭐☆':'⭐☆☆'}</div>
- <div class="grid2 mt2"><div class="card"><p class="sub">স্কোর</p><p class="h2 en">${r.score}/${r.total}</p></div><div class="card"><p class="sub">অর্জিত XP</p><p class="h2 en">+${r.xp}</p></div></div>
- <div class="stick"><button class="btn" data-a="again">আবার করি</button><button class="btn ghost mt" data-a="back">ঠিক আছে</button></div></div>`},
+ <div class="grid2 mt2"><div class="card"><p class="sub">Score</p><p class="h2 en">${r.score}/${r.total}</p></div><div class="card"><p class="sub">XP Earned</p><p class="h2 en">+${r.xp}</p></div></div>
+ <div class="stick"><button class="btn" data-a="again">Try Again</button><button class="btn ghost mt" data-a="back">Done</button></div></div>`},
 
 lesson:()=>`<div class="view">${head('ফল · Fruits')}
  <div class="card flash"><div class="pic" style="font-size:72px">🍎🍌🥭</div><p class="sub">প্রতিদিনের পরিচিত ফলের নাম ইংরেজিতে</p></div>
- <h2 class="h2 mt2">এই পাঠে যা যা থাকছে</h2>
+ <h2 class="h2 mt2">In This Lesson</h2>
  ${[['🖼️','ছবি দেখে শব্দ শেখা','৬টি কার্ড','blue'],['🎯','অনুশীলন','৬টি প্রশ্ন','green'],['📖','ছোট গল্প','শুনি ও পড়ি','yellow'],['✍️','নিজে লিখি','১–২টি বাক্য','purple']].map(s=>`
  <div class="card mt row"><div class="ico c-${s[3]}">${s[0]}</div><div><b>${s[1]}</b><p class="sub">${s[2]}</p></div></div>`).join('')}
- <div class="stick"><button class="btn" data-a="startvocab">পাঠ শুরু করি</button></div></div>`,
+ <div class="stick"><button class="btn" data-a="startvocab">Start Lesson</button></div></div>`,
 
 vcard:()=>{const w=FR[S.wi];return `<div class="view">${topbar(`${S.wi+1}/6`,(S.wi+1)/6*40)}
  <div class="card flash mt2"><div class="pic">${w.e}</div>
@@ -445,75 +445,75 @@ vcard:()=>{const w=FR[S.wi];return `<div class="view">${topbar(`${S.wi+1}/6`,(S.
   <p class="sub en">${w.ip} · ${w.pr}</p><p class="bn mt">${w.bn}</p>
   <div class="ex"><p class="en" style="font-size:18px">${w.ex}</p><p class="sub">${w.exb}</p><button class="spk mt" style="width:auto;padding:0 14px;border-radius:99px;font-size:14px" data-a="say" data-t="${w.ex}">🔊 বাক্যটি শুনি</button></div></div>
  <div class="dots">${FR.map((_,i)=>`<i class="${i===S.wi?'on':''}"></i>`).join('')}</div>
- <div class="stick"><div class="row"><button class="btn ghost" data-a="vprev" ${S.wi?'':'disabled'} style="flex:1">আগের</button><button class="btn" data-a="vnext" style="flex:2">${S.wi<5?'পরের শব্দ':'অনুশীলনে যাই'}</button></div></div></div>`},
+ <div class="stick"><div class="row"><button class="btn ghost" data-a="vprev" ${S.wi?'':'disabled'} style="flex:1">Previous</button><button class="btn" data-a="vnext" style="flex:2">${S.wi<5?'Next Word':'Go to Practice'}</button></div></div></div>`},
 
-done:()=>`<div class="view" style="text-align:center"><div class="confetti mt2">🎉</div><h1 class="h1 mt">পাঠ শেষ! অভিনন্দন</h1><p class="sub">তুমি ৬টি নতুন শব্দ শিখলে</p>
+done:()=>`<div class="view" style="text-align:center"><div class="confetti mt2">🎉</div><h1 class="h1 mt">Lesson Complete!</h1><p class="sub">তুমি ৬টি নতুন শব্দ শিখলে</p>
  <div class="stars mt">${S.lscore>=5?'⭐⭐⭐':S.lscore>=3?'⭐⭐☆':'⭐☆☆'}</div>
- <div class="grid2 mt2"><div class="card"><p class="sub">সঠিক উত্তর</p><p class="h2 en">${S.lscore}/6</p></div><div class="card"><p class="sub">মোট XP</p><p class="h2 en">${P.xp}</p></div></div>
+ <div class="grid2 mt2"><div class="card"><p class="sub">Correct</p><p class="h2 en">${S.lscore}/6</p></div><div class="card"><p class="sub">Total XP</p><p class="h2 en">${P.xp}</p></div></div>
  <div class="card mt" style="background:var(--yellow-s);text-align:left"><b>এবার গল্পে শব্দগুলো দেখি</b><p class="sub">বাক্যের ভেতরে দেখলে শব্দ বেশি দিন মনে থাকে।</p></div>
- <div class="stick"><button class="btn" data-a="story">গল্পটি পড়ি</button><button class="btn ghost mt" data-a="lessonq">আবার অনুশীলন করি</button></div></div>`,
+ <div class="stick"><button class="btn" data-a="story">Read the Story</button><button class="btn ghost mt" data-a="lessonq">Practice Again</button></div></div>`,
 
 story:()=>{const hl=t=>FR.reduce((s,w)=>s.replace(new RegExp('\\b('+w.en+'s?)\\b','i'),'<b>$1</b>'),t);
- return `<div class="view">${head('গল্প')}<h1 class="h1 en">Rumi and the Mango Tree</h1><p class="sub">বাক্যে ট্যাপ করলে বাংলা অর্থ দেখাবে</p>
+ return `<div class="view">${head('Story')}<h1 class="h1 en">Rumi and the Mango Tree</h1><p class="sub">বাক্যে ট্যাপ করলে বাংলা অর্থ দেখাবে</p>
  <button class="btn ghost mt" data-a="say" data-t="${STORY.map(s=>s[0]).join(' ')}">🔊 পুরো গল্পটি শুনি</button>
  ${STORY.map((s,i)=>`<div class="sent" data-a="tog" data-i="${i}" role="button" tabindex="0">${hl(s[0])}${S.open[i]?`<em>${s[1]}</em>`:''}</div>`).join('')}
- <div class="stick"><button class="btn" data-a="writing">নিজে লিখি</button></div></div>`},
+ <div class="stick"><button class="btn" data-a="writing">Start Writing</button></div></div>`},
 
-writing:()=>{const f=S.fb;return `<div class="view">${head('নিজে লিখি ✍️')}<p class="sub">তোমার প্রিয় ফল নিয়ে ইংরেজিতে ১–২টি বাক্য লেখো।</p>
+writing:()=>{const f=S.fb;return `<div class="view">${head('Writing ✍️')}<p class="sub">তোমার প্রিয় ফল নিয়ে ইংরেজিতে ১–২টি বাক্য লেখো।</p>
  <div class="card mt c-purple"><p class="sub">সাহায্য</p><p class="en"><b>I like ___ because it is ___.</b></p><p class="sub en">sweet · juicy · yellow · fresh</p></div>
  <textarea id="ta" class="mt" placeholder="এখানে লেখো…" aria-label="তোমার লেখা">${esc(S.text)}</textarea>
  ${f?`<div class="card mt" style="background:${f.good?'var(--green-s)':'var(--yellow-s)'}"><b>${f.title}</b><p class="sub" style="color:var(--ink)">${f.msg}</p></div>`:''}
- <div class="stick"><button class="btn ghost" data-a="check">লেখা দেখি</button><button class="btn green mt" data-a="finish">পাঠ সম্পূর্ণ করি</button></div></div>`},
+ <div class="stick"><button class="btn ghost" data-a="check">Check Writing</button><button class="btn green mt" data-a="finish">Finish Lesson</button></div></div>`},
 
 listen:()=>{const h=[14,22,10,30,18,26,12,32,20,14,28,16,24,10,30,18,22,12,26,16];
- return `<div class="view">${head('লিসেনিং')}
+ return `<div class="view">${head('Listening')}
  <div class="card c-blue row"><div class="ico" style="background:var(--card)">🎧</div><p><b>কথোপকথনটি শোনো, তারপর প্রশ্নের উত্তর দাও।</b></p></div>
  <div class="card mt"><div class="row"><button class="spk" style="width:54px;height:54px;background:var(--blue);color:#fff" data-a="playconv" aria-label="চালাই">${S.ls.play?'⏸':'▶'}</button><div class="wave">${h.map(x=>`<i style="height:${x}px"></i>`).join('')}</div></div>
- <button class="btn ghost mt" data-a="showtr">${S.ls.show?'লেখা লুকাই':'লেখা দেখি'}</button>
+ <button class="btn ghost mt" data-a="showtr">${S.ls.show?'Hide Transcript':'Show Transcript'}</button>
  ${S.ls.show?CONV.map(c=>`<p class="en mt"><b>${c.n}:</b> ${c.t}</p>`).join(''):''}</div>
- <div class="stick"><button class="btn" data-a="lq">প্রশ্নের উত্তর দিই</button></div></div>${nav('practice')}`},
+ <div class="stick"><button class="btn" data-a="lq">Answer Questions</button></div></div>${nav('practice')}`},
 
 speak:()=>{const s=S.sp,r=s.res,t=SPS[s.i];
- return `<div class="view">${head('স্পিকিং প্র্যাকটিস')}
+ return `<div class="view">${head('Speaking Practice')}
  <div class="card c-blue"><p class="sub" style="color:var(--ink)">মাইকে ট্যাপ করে বাক্যটি স্পষ্ট করে বলো।</p></div>
  <div class="card mt flash"><div class="row" style="justify-content:center"><p class="en" style="font-size:25px;font-weight:800">${t}</p><button class="spk" data-a="say" data-t="${t}" aria-label="শুনি">🔊</button></div></div>
  <div style="text-align:center;margin:26px 0 12px"><button class="mic ${s.state==='listening'?'live':''}" data-a="mic" aria-label="বলো">🎙️</button>
- <p class="sub mt">${s.state==='listening'?'শুনছি…':s.state==='done'?'আবার বলতে মাইকে ট্যাপ করো':'ট্যাপ করে বলো'}</p></div>
+ <p class="sub mt">${s.state==='listening'?'Listening…':s.state==='done'?'আবার বলতে মাইকে ট্যাপ করো':'Tap to speak'}</p></div>
  ${s.note?`<p class="sub" style="text-align:center">${esc(s.note)}</p>`:''}
- ${r?`<div class="card mt"><div class="row"><div>${ring(r.total,'স্কোর',1)}</div><div style="flex:1">${[['উচ্চারণ',r.pron],['সাবলীলতা',r.flu],['নির্ভুলতা',r.acc]].map(x=>`<div class="row sp sub"><span>${x[0]}</span><b class="en" style="color:var(--green)">${Math.min(100,x[1])}</b></div>`).join('')}</div></div></div>`:''}
- <div class="row mt"><button class="btn ghost" data-a="spagain" style="flex:1">আবার চেষ্টা</button><button class="btn" data-a="spnext" style="flex:1">পরের বাক্য</button></div></div>${nav('practice')}`},
+ ${r?`<div class="card mt"><div class="row"><div>${ring(r.total,'Score',1)}</div><div style="flex:1">${[['Pronunciation',r.pron],['Fluency',r.flu],['Accuracy',r.acc]].map(x=>`<div class="row sp sub"><span>${x[0]}</span><b class="en" style="color:var(--green)">${Math.min(100,x[1])}</b></div>`).join('')}</div></div></div>`:''}
+ <div class="row mt"><button class="btn ghost" data-a="spagain" style="flex:1">Try Again</button><button class="btn" data-a="spnext" style="flex:1">Next Sentence</button></div></div>${nav('practice')}`},
 
 progress:()=>{const f=S.pf,vp=pctOf(P.learned.length,W.length),gp=pctOf(P.gdone.length,G.length);
- const tabs=chips([['overview','সারসংক্ষেপ'],['vocab','শব্দ'],['grammar','ব্যাকরণ']],f,'pf');
+ const tabs=chips([['overview','Overview'],['vocab','Vocabulary'],['grammar','Grammar']],f,'pf');
  let body='';
- if(f==='overview')body=`<div class="card mt">${ring(lvPct(),LV[lvl()].bn)}<p class="sub" style="text-align:center;margin-top:10px">এগিয়ে চলো, ভালো করছো!</p></div>
-  <div class="grid2 mt">${[['📚','শব্দভান্ডার',vp,'purple'],['✏️','ব্যাকরণ',gp,'green'],['🎙️','স্পিকিং',P.speak,'yellow'],['🎧','লিসেনিং',P.listen,'blue']].map(s=>`<div class="card c-${s[3]}" style="box-shadow:none"><div class="row"><span style="font-size:22px">${s[0]}</span><div><p class="sub">${s[1]}</p><p class="h2 en">${s[2]}%</p></div></div></div>`).join('')}</div>
-  <div class="card mt"><b>এই সপ্তাহে</b><div class="week">${[['শনি',40],['রবি',60],['সোম',85],['মঙ্গল',30],['বুধ',70],['বৃহ',50],['আজ',Math.min(100,20+Math.round((P.xp-210)/2))]].map(d=>`<div><i style="height:${d[1]}px"></i>${d[0]}</div>`).join('')}</div></div>`;
- else if(f==='vocab')body=`<div class="grid2 mt"><div class="card"><p class="sub">শেখা শব্দ</p><p class="h1 en">${P.learned.length}/${W.length}</p></div><div class="card"><p class="sub">সেভ করা</p><p class="h1 en">${P.marks.length}</p></div></div>
-  <div class="card mt"><b>ক্যাটাগরি অনুযায়ী</b>${[['ফল',FR],['সাধারণ শব্দ',W.filter(w=>w.c==='g')]].map(c=>{const n=c[1].filter(w=>P.learned.includes(w.en)).length;return `<div class="skill"><div class="row sp sub"><span>${c[0]}</span><span class="en">${n}/${c[1].length}</span></div><div class="bar"><i style="width:${pctOf(n,c[1].length)}%;background:var(--purple)"></i></div></div>`}).join('')}</div>`;
- else body=`<div class="card mt"><b>বিষয়ভিত্তিক অগ্রগতি</b>${G.map(g=>`<div class="skill"><div class="row sp sub"><span class="en">${g.en}</span><span>${P.gdone.includes(g.k)?'✅ শেষ':'বাকি'}</span></div><div class="bar"><i style="width:${P.gdone.includes(g.k)?100:0}%;background:var(--green)"></i></div></div>`).join('')}</div>`;
- return `<div class="view"><h1 class="h1">অগ্রগতি</h1><p class="sub">ছোট ছোট ধাপ, বড় উন্নতি</p>${tabs}${body}</div>${nav('progress')}`},
+ if(f==='overview')body=`<div class="card mt">${ring(lvPct(),LV[lvl()].en)}<p class="sub" style="text-align:center;margin-top:10px">এগিয়ে চলো, ভালো করছো!</p></div>
+  <div class="grid2 mt">${[['📚','Vocabulary',vp,'purple'],['✏️','Grammar',gp,'green'],['🎙️','Speaking',P.speak,'yellow'],['🎧','Listening',P.listen,'blue']].map(s=>`<div class="card c-${s[3]}" style="box-shadow:none"><div class="row"><span style="font-size:22px">${s[0]}</span><div><p class="sub">${s[1]}</p><p class="h2 en">${s[2]}%</p></div></div></div>`).join('')}</div>
+  <div class="card mt"><b>This Week</b><div class="week">${[['Sat',40],['Sun',60],['Mon',85],['Tue',30],['Wed',70],['Thu',50],['Today',Math.min(100,20+Math.round((P.xp-210)/2))]].map(d=>`<div><i style="height:${d[1]}px"></i>${d[0]}</div>`).join('')}</div></div>`;
+ else if(f==='vocab')body=`<div class="grid2 mt"><div class="card"><p class="sub">Words Learned</p><p class="h1 en">${P.learned.length}/${W.length}</p></div><div class="card"><p class="sub">Saved</p><p class="h1 en">${P.marks.length}</p></div></div>
+  <div class="card mt"><b>By Category</b>${[['Fruits',FR],['General',W.filter(w=>w.c==='g')]].map(c=>{const n=c[1].filter(w=>P.learned.includes(w.en)).length;return `<div class="skill"><div class="row sp sub"><span>${c[0]}</span><span class="en">${n}/${c[1].length}</span></div><div class="bar"><i style="width:${pctOf(n,c[1].length)}%;background:var(--purple)"></i></div></div>`}).join('')}</div>`;
+ else body=`<div class="card mt"><b>Progress by Topic</b>${G.map(g=>`<div class="skill"><div class="row sp sub"><span class="en">${g.en}</span><span>${P.gdone.includes(g.k)?'✅ Done':'Pending'}</span></div><div class="bar"><i style="width:${P.gdone.includes(g.k)?100:0}%;background:var(--green)"></i></div></div>`).join('')}</div>`;
+ return `<div class="view"><h1 class="h1">Progress</h1><p class="sub">ছোট ছোট ধাপ, বড় উন্নতি</p>${tabs}${body}</div>${nav('progress')}`},
 
 level:()=>{const k=lvl();
- return `<div class="view">${head('আমার লেভেল')}
+ return `<div class="view">${head('My Level')}
  ${LV.map((l,i)=>`<div class="card mt row" style="${i>k?'opacity:.6':''}"><div class="ico c-${l.col}">${l.ic}</div><div style="flex:1"><b class="en">${l.en} <span class="sub">· ${l.bn}</span></b><p class="sub">${l.d}</p></div><span>${i<k?'✅':i===k?'<span class="chip c-green" style="color:var(--green)">চলমান</span>':'🔒'}</span></div>`).join('')}
- ${k<3?`<div class="card mt c-purple" style="box-shadow:none"><div class="row"><span style="font-size:40px">⛰️</span><div style="flex:1"><b>পরের লেভেল: ${LV[k+1].bn}</b><p class="sub">আর ${LV[k+1].min-P.xp} XP বাকি</p><div class="bar mt" style="margin-top:8px"><i style="width:${lvPct()}%;background:var(--green)"></i></div></div></div></div>`:''}</div>${nav('profile')}`},
+ ${k<3?`<div class="card mt c-purple" style="box-shadow:none"><div class="row"><span style="font-size:40px">⛰️</span><div style="flex:1"><b>Next Level: ${LV[k+1].en}</b><p class="sub">${LV[k+1].min-P.xp} XP to go</p><div class="bar mt" style="margin-top:8px"><i style="width:${lvPct()}%;background:var(--green)"></i></div></div></div></div>`:''}</div>${nav('profile')}`},
 
 badges:()=>{const st={lesson:!!P.flags.lesson,streak:true,words:P.learned.length>=10,quiz:!!P.flags.quiz,speak:!!P.flags.speak,listen:!!P.flags.listen,daily:!!P.flags.daily,gram:P.gdone.length>=3};
- return `<div class="view">${head('অর্জন')}<p class="sub">${BADGES.filter(b=>st[b[3]]).length}/${BADGES.length}টি অর্জন হয়েছে</p>
+ return `<div class="view">${head('Achievements')}<p class="sub">${BADGES.filter(b=>st[b[3]]).length}/${BADGES.length} unlocked</p>
  <div class="grid2 mt">${BADGES.map(b=>`<div class="card bd ${st[b[3]]?'':'lock'}"><div class="ico c-yellow">${b[0]}</div><b>${b[1]}</b><p class="sub">${b[2]}</p></div>`).join('')}</div></div>${nav('profile')}`},
 
-profile:()=>`<div class="view"><div class="row"><div class="ico" style="width:64px;height:64px;font-size:34px;background:var(--blue-s);border-radius:50%">🙂</div><div><h1 class="h1">শিক্ষার্থী</h1><span class="chip c-green" style="color:var(--green)">${LV[lvl()].ic} ${LV[lvl()].bn} · ${P.xp} XP</span></div></div>
+profile:()=>`<div class="view"><div class="row"><div class="ico" style="width:64px;height:64px;font-size:34px;background:var(--blue-s);border-radius:50%">🙂</div><div><h1 class="h1">Learner</h1><span class="chip c-green" style="color:var(--green)">${LV[lvl()].ic} ${LV[lvl()].en} · ${P.xp} XP</span></div></div>
  <div class="card mt list">
-  <div class="row sp" data-a="go" data-s="level"><span>🏅 আমার লেভেল</span><span class="sub">›</span></div>
-  <div class="row sp" data-a="tab" data-k="progress"><span>📊 আমার অগ্রগতি</span><span class="sub">›</span></div>
-  <div class="row sp" data-a="go" data-s="badges"><span>🏆 অর্জন</span><span class="sub">›</span></div>
-  <div class="row sp"><span>🌙 ডার্ক মোড</span><button class="toggle ${isDark()?'on':''}" data-a="theme" aria-label="ডার্ক মোড"></button></div>
-  <div class="row sp"><span>⏰ প্রতিদিনের রিমাইন্ডার</span><div class="row" style="gap:8px">${P.remind.on?`<input id="rt" class="sel-time" type="time" value="${P.remind.time}" aria-label="সময়">`:''}<button class="toggle ${P.remind.on?'on':''}" data-a="remind" aria-label="রিমাইন্ডার"></button></div></div>
-  <div class="row sp" data-a="toast" data-m="HeyLearn-এ যেকোনো সমস্যা হলে আমাদের জানাও"><span>❓ সাহায্য</span><span class="sub">›</span></div>
-  <div class="row sp" data-a="toast" data-m="HeyLearn · ডেমো সংস্করণ"><span>ℹ️ অ্যাপ সম্পর্কে</span><span class="sub">›</span></div>
+  <div class="row sp" data-a="go" data-s="level"><span>🏅 My Level</span><span class="sub">›</span></div>
+  <div class="row sp" data-a="tab" data-k="progress"><span>📊 My Progress</span><span class="sub">›</span></div>
+  <div class="row sp" data-a="go" data-s="badges"><span>🏆 Achievements</span><span class="sub">›</span></div>
+  <div class="row sp"><span>🌙 Dark Mode</span><button class="toggle ${isDark()?'on':''}" data-a="theme" aria-label="ডার্ক মোড"></button></div>
+  <div class="row sp"><span>⏰ Daily Reminder</span><div class="row" style="gap:8px">${P.remind.on?`<input id="rt" class="sel-time" type="time" value="${P.remind.time}" aria-label="সময়">`:''}<button class="toggle ${P.remind.on?'on':''}" data-a="remind" aria-label="রিমাইন্ডার"></button></div></div>
+  <div class="row sp" data-a="toast" data-m="HeyLearn-এ যেকোনো সমস্যা হলে আমাদের জানাও"><span>❓ Help</span><span class="sub">›</span></div>
+  <div class="row sp" data-a="toast" data-m="HeyLearn · Demo version"><span>ℹ️ About</span><span class="sub">›</span></div>
  </div>
- <div class="card mt"><b>দৈনিক লক্ষ্য</b><p class="sub">প্রতিদিন কত মিনিট শিখবে?</p>${chips([[10,'১০ মিনিট'],[15,'১৫ মিনিট'],[20,'২০ মিনিট'],[30,'৩০ মিনিট']],P.goal,'goal')}</div>
+ <div class="card mt"><b>Daily Goal</b><p class="sub">প্রতিদিন কত মিনিট শিখবে?</p>${chips([[10,'10 min'],[15,'15 min'],[20,'20 min'],[30,'30 min']],P.goal,'goal')}</div>
  </div>${nav('profile')}`
 };
 
@@ -598,14 +598,40 @@ render();
 
 /* PWA: অফলাইনে চালানোর জন্য */
 if('serviceWorker' in navigator){
-  let reloaded=false;
-  const had=!!navigator.serviceWorker.controller;
-  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had&&!reloaded){reloaded=true;location.reload()}});
   window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}));
 }
-
+/* ---- নতুন সংস্করণ এলে ওপরে Update বার দেখায় ---- */
+(function(){
+  var base=null,shown=false;
+  function hash(t){var h=5381;for(var i=0;i<t.length;i++){h=((h<<5)+h+t.charCodeAt(i))|0}return h}
+  function get(){return fetch('index.html?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():null}).then(function(t){return t?hash(t):null}).catch(function(){return null})}
+  function bar(){
+    if(shown)return;shown=true;
+    var d=document.createElement('div');d.id='hl-update';
+    d.innerHTML='<div class="t"><b>New version available</b><span>নতুন সংস্করণ এসেছে</span></div><button class="go">Update</button><button class="x" aria-label="Later">×</button>';
+    document.body.appendChild(d);
+    d.querySelector('.x').onclick=function(){d.remove();shown=false;snooze=Date.now()+30*60*1000};
+    d.querySelector('.go').onclick=function(){
+      d.querySelector('.go').textContent='Updating…';
+      (window.caches?caches.keys().then(function(k){return Promise.all(k.map(function(x){return caches.delete(x)}))}):Promise.resolve()).then(function(){
+        return navigator.serviceWorker&&navigator.serviceWorker.getRegistrations?navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister()}))}):0
+      }).finally(function(){location.reload()});
+    };
+  }
+  var snooze=0;
+  function check(){if(base===null||shown||Date.now()<snooze)return;get().then(function(h){if(h!==null&&h!==base)bar()})}
+  get().then(function(h){base=h;setInterval(check,5*60*1000)});
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});
+})();
 </script>
 
+<style>
+#hl-update{position:fixed;top:0;left:0;right:0;z-index:10000;display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top,0px)) 14px 10px;background:#4A86F7;color:#fff;box-shadow:0 6px 20px rgba(30,50,110,.3);font-family:'Hind Siliguri','Nunito',system-ui,sans-serif}
+#hl-update .t{flex:1;line-height:1.25}#hl-update .t b{display:block;font-size:15px}#hl-update .t span{font-size:12.5px;opacity:.9}
+#hl-update button{border:0;border-radius:10px;font:inherit;font-weight:700;cursor:pointer}
+#hl-update .go{background:#fff;color:#2F63D6;padding:8px 16px;font-size:14px}
+#hl-update .x{background:none;color:#fff;font-size:22px;padding:2px 8px}
+</style>
 <!-- HeyLearn: ইন্সটল ব্যানার -->
 <style>
 #hl-install{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:9999;max-width:406px;margin:0 auto;display:none;align-items:center;gap:12px;background:#fff;color:#1D2742;border:1px solid #E6EAF3;border-radius:18px;padding:12px 14px;box-shadow:0 10px 30px rgba(30,50,110,.28);font-family:'Hind Siliguri','Nunito',system-ui,sans-serif}

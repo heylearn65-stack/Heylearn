@@ -1,7 +1,7 @@
 // HeyLearn অফলাইন + অটো-আপডেট।
 // index.html ও manifest সবসময় আগে ইন্টারনেট থেকে নতুনটা আনে (না পেলে ক্যাশ থেকে দেখায়)।
 // তাই GitHub-এ ফাইল বদলালেই সবার অ্যাপে নিজে থেকে আপডেট আসবে।
-const VERSION='heylearn-v5';
+const VERSION='heylearn-v6';
 const SHELL=['./','index.html','manifest.webmanifest','heyLearn-icon-192.png','heyLearn-icon-512.png'];
 self.addEventListener('install',e=>{
   e.waitUntil(caches.open(VERSION).then(c=>Promise.all(SHELL.map(u=>c.add(new Request(u,{cache:'reload'})).catch(()=>{})))));
@@ -14,6 +14,7 @@ self.addEventListener('activate',e=>{
 self.addEventListener('fetch',e=>{
   const req=e.request;
   if(req.method!=='GET')return;
+  if(new URL(req.url).search.indexOf('_=')>-1)return; // আপডেট-চেক ক্যাশে রাখব না
   const sameOrigin=new URL(req.url).origin===location.origin;
   const isPage=req.mode==='navigate'||/\.(html|webmanifest|js)$/.test(new URL(req.url).pathname);
   if(sameOrigin&&isPage){
