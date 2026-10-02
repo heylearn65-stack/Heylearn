@@ -7,8 +7,8 @@
 <meta name="description" content="HeyLearn – বাংলাভাষীদের জন্য ইংরেজি শেখার অ্যাপ">
 <title>HeyLearn</title>
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icon-192.png">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="heyLearn-icon-192.png">
+<link rel="apple-touch-icon" href="heyLearn-icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -597,7 +597,12 @@ document.addEventListener('change',e=>{if(e.target.id==='rt'){P.remind.time=e.ta
 render();
 
 /* PWA: অফলাইনে চালানোর জন্য */
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
+if('serviceWorker' in navigator){
+  let reloaded=false;
+  const had=!!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had&&!reloaded){reloaded=true;location.reload()}});
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}));
+}
 
 </script>
 </body>

@@ -3,6 +3,7 @@
   "short_name": "HeyLearn",
   "description": "বাংলাভাষীদের জন্য ইংরেজি শেখার অ্যাপ",
   "lang": "bn",
+  "id": "./index.html",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -10,7 +11,7 @@
   "background_color": "#4A86F7",
   "theme_color": "#4A86F7",
   "icons": [
-    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
-    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+    { "src": "heyLearn-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "heyLearn-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
   ]
 }
