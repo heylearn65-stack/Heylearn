@@ -371,6 +371,7 @@ home:()=>{const w=P.level==='adv'?(a=>({en:a[0],e:PIC[a[0]]||'📘',ip:'Advanced
   <div class="row mt"><div class="pic2">${w.e}</div><div><p class="word" style="font-size:28px">${w.en}</p><p class="sub en">${w.ip} · ${w.pr}</p><p class="bn2">${w.bn}</p></div></div>
   <p class="en mt">${w.ex}</p></div>
  <button class="card mt row" data-a="go" data-s="plan"><div class="ico c-yellow">🎯</div><div style="flex:1"><b>Study Plan</b><p class="sub">Words, writing and grammar for today</p></div><span>›</span></button>
+ ${sbOn()?'<button class="card mt row" data-a="commopen"><div class="ico c-green">👥</div><div style="flex:1"><b>Community</b><p class="sub">League, duels and friends</p></div><span>›</span></button>':''}
  <div class="grid2 mt">
   <button class="tile c-purple" data-a="go" data-s="vocab"><div class="ico" style="background:var(--card)">📚</div><b class="mt">Vocabulary</b><span>Learn new words</span></button>
   <button class="tile c-green" data-a="go" data-s="grammar"><div class="ico" style="background:var(--card)">✏️</div><b class="mt">Grammar</b><span>Build a strong foundation</span></button>
@@ -384,6 +385,7 @@ home:()=>{const w=P.level==='adv'?(a=>({en:a[0],e:PIC[a[0]]||'📘',ip:'Advanced
 learn:()=>`<div class="view"><h1 class="h1">Learn</h1><p class="sub">Start wherever you like</p>
  ${P.level==='adv'?'':`<button class="tile mt c-blue" data-a="lesson"><div class="row"><div class="ico" style="background:var(--card)">🍎</div><div style="flex:1"><b>Fruits</b><span>Picture → Word → Practice → Story → Writing</span></div><span>›</span></div></button>`}
  <button class="card mt row" data-a="go" data-s="plan"><div class="ico c-yellow">🎯</div><div style="flex:1"><b>Study Plan</b><p class="sub">Words, writing and grammar for today</p></div><span>›</span></button>
+ ${sbOn()?'<button class="card mt row" data-a="commopen"><div class="ico c-green">👥</div><div style="flex:1"><b>Community</b><p class="sub">League, duels and friends</p></div><span>›</span></button>':''}
  <h2 class="h2 mt2">Learning Areas</h2>
  <div class="grid2 mt">${[['📚','শব্দভান্ডার','Vocabulary','vocab','purple'],['✏️','ব্যাকরণ','Grammar','grammar','green'],['🎧','শোনা','Listening','listen','blue'],['🎙️','বলা','Speaking','speak','yellow'],['📖','গল্প','Story','story','purple'],['✍️','লেখা','Writing','writing','green']].map(t=>`
   <button class="tile c-${t[4]}" data-a="go" data-s="${t[3]}"><div class="ico" style="background:var(--card)">${t[0]}</div><b class="mt">${t[2]}</b><span>${t[1]}</span></button>`).join('')}</div>
@@ -807,9 +809,11 @@ V.comm=()=>{if(!sbOn())return `<div class="view">${head('Community')}<div class=
  if(!P.sb)return `<div class="view">${head('Community')}<div class="card mt"><b>${c.mode==='login'?'Log in':'Create account'}</b><p class="sub mt">Follow friends and see their progress. We never show your email to others.</p></div><input id="cm-e" type="email" placeholder="Email" value="${c.email}" ${inp}><input id="cm-p" type="password" placeholder="Password (6+ characters)" ${inp}>${msg}<button class="btn mt2" data-a="cmauth" ${c.busy?'disabled':''}>${c.busy?'Please wait…':c.mode==='login'?'Log in':'Sign up'}</button><button class="btn ghost mt" data-a="cmmode">${c.mode==='login'?'New here? Create an account':'Have an account? Log in'}</button></div>`;
  if(!c.me)return `<div class="view">${head('Community')}<div class="card mt"><b>Choose a username</b><p class="sub mt">3–20 characters: a–z, 0–9 and _. Others will see this name.</p></div><input id="cm-u" placeholder="username" autocapitalize="none" ${inp}>${msg}<button class="btn mt2" data-a="cmuser" ${c.busy?'disabled':''}>Continue</button><button class="btn ghost mt" data-a="cmout">Log out</button></div>`;
  const fol=new Set(c.list.map(u=>u.id)),board=[...c.list,Object.assign({},c.me,{xp:P.xp,streak:streak()})].sort((a,b)=>b.xp-a.xp);
- const tabs=chips([['following','Following'],['find','Find'],['me','Me']],c.tab,'cmtab');
+ const tabs=chips([['following','Friends'],['league','League'],['duels','Duels'+cmPend()],['find','Find'],['me','Me']],c.tab,'cmtab');
  let body='';
  if(c.tab==='following')body=c.list.length?`<p class="sub mt">Leaderboard (you and people you follow)</p>${board.map((u,i)=>`<div class="card mt row"><b style="width:26px">${i+1}</b>${cmAv(u.username)}<div style="flex:1"><b>@${u.username}${u.id===P.sb.uid?' (you)':''}</b><p class="sub">${u.xp} XP · 🔥 ${u.streak}</p></div></div>`).join('')}<h2 class="h2 mt2">Following</h2>${c.list.map(u=>cmRow(u,1)).join('')}`:`<div class="card mt" style="text-align:center"><div style="font-size:52px">👥</div><p class="sub mt">You are not following anyone yet. Open <b>Find</b> to search by username.</p></div>`;
+ else if(c.tab==='league')body=cmLeague();
+ else if(c.tab==='duels')body=cmDuels();
  else if(c.tab==='find')body=`<input id="cm-q" placeholder="Search username…" autocapitalize="none" oninput="cmSearch(this.value)" value="${c.q}" ${inp}><div id="cm-res">${c.res.map(u=>cmRow(u,fol.has(u.id))).join('')}</div>`;
  else body=`<div class="card mt" style="text-align:center">${cmAv(c.me.username)}<h2 class="h2 mt">@${c.me.username}</h2><p class="sub">Followers <b>${c.fers}</b> · Following <b>${c.list.length}</b></p></div><button class="btn ghost mt" data-a="cmout">Log out</button><button class="btn ghost mt" data-a="cmdel" style="color:var(--red)">Delete my community profile</button>`;
  return `<div class="view">${head('Community')}${tabs}${msg}${body}</div>`};
@@ -821,6 +825,81 @@ async function cmAuth(){const c=S.cm,e=$('#cm-e').value.trim(),p=$('#cm-p').valu
   P.sb={at:j.access_token,rt:j.refresh_token,uid:j.user.id,exp:Date.now()+j.expires_in*1000};save();cmLoad()}catch(x){cmErr(x)}}
 async function cmUser(){const c=S.cm,u=$('#cm-u').value.trim().toLowerCase();if(!/^[a-z0-9_]{3,20}$/.test(u)){c.msg='Use 3–20 characters: a–z, 0–9 and _.';return render(true)}c.busy=true;c.msg='';render(true);
  try{await sb('/rest/v1/profiles',{m:'POST',h:{Prefer:'return=minimal'},b:{id:P.sb.uid,username:u,level:P.level||'basic',xp:P.xp,streak:streak(),words:P.learned.length}});cmLoad()}catch(e){cmErr(e)}}
+
+/* ===== Weekly League + Friend Duels ===== */
+const wkStart=()=>{const d=new Date(),k=(d.getDay()+6)%7;d.setDate(d.getDate()-k);return dstr(d)};
+const weekXp=()=>{const k=(new Date().getDay()+6)%7;let t=0;for(let i=0;i<=k;i++)t+=P.xpd[dago(i)]||0;return t};
+syncStats=function(){if(!P.sb||!sbOn())return;clearTimeout(syncT);syncT=setTimeout(()=>{const base={xp:P.xp,streak:streak(),level:P.level||'basic',words:P.learned.length,updated_at:new Date().toISOString()};
+ sb('/rest/v1/profiles?id=eq.'+P.sb.uid,{m:'PATCH',h:{Prefer:'return=minimal'},b:Object.assign({week_xp:weekXp(),week_start:wkStart()},base)}).catch(()=>sb('/rest/v1/profiles?id=eq.'+P.sb.uid,{m:'PATCH',h:{Prefer:'return=minimal'},b:base}).catch(()=>{}))},2500)};
+const cmLoad0=cmLoad;
+cmLoad=async function(){await cmLoad0();const c=S.cm;if(!P.sb||!c.me)return;
+ try{c.league=await sb('/rest/v1/profiles?week_start=eq.'+wkStart()+'&order=week_xp.desc&limit=20&select=id,username,level,xp,streak,week_xp');c.duels=await sb('/rest/v1/duels?select=*&order=created_at.desc&limit=20');
+  const ids=[...new Set(c.duels.map(d=>d.a===P.sb.uid?d.b:d.a))];c.dp={};if(ids.length)(await sb('/rest/v1/profiles?id=in.('+ids.join(',')+')&select=id,username,xp,level')).forEach(u=>c.dp[u.id]=u);render(true)}catch(e){c.msg='Run community-upgrade.sql in Supabase to enable League and Duels.';render(true)}};
+const cmPend=()=>{const n=((S.cm.duels)||[]).filter(d=>d.status==='pending'&&d.b===P.sb.uid).length;return n?' •'+n:''};
+const cmFolBtn=(u,f)=>`<button data-a="${f?'cmunf':'cmfol'}" data-id="${u.id}" style="border:0;border-radius:12px;padding:8px 14px;font:inherit;font-weight:700;cursor:pointer;${f?'background:var(--blue-s);color:var(--blue)':'background:var(--blue);color:#fff'}">${f?'Following':'Follow'}</button>`;
+var cmLeague=()=>{const c=S.cm,L=c.league||[],me=P.sb.uid,fol=new Set(c.list.map(u=>u.id));
+ return `<div class="card mt" style="background:linear-gradient(135deg,#1D4FBF,#3B7BF0);color:#fff;border:0"><p style="opacity:.85;font-size:14px">Weekly League</p><h2 style="font-size:22px;margin:4px 0">${L.length} learner${L.length===1?'':'s'} this week</h2><p style="opacity:.9;font-size:14px">Your XP this week: <b>${weekXp()}</b> · resets every Monday</p></div>`+
+ (L.length?L.map((u,i)=>`<div class="card mt row"><b style="width:28px;text-align:center">${['🥇','🥈','🥉'][i]||i+1}</b>${cmAv(u.username)}<div style="flex:1;min-width:0"><b>@${u.username}${u.id===me?' (you)':''}</b><p class="sub">${u.id===me?weekXp():u.week_xp} XP this week · 🔥 ${u.streak}</p></div>${u.id===me?'':cmFolBtn(u,fol.has(u.id))}</div>`).join(''):'<p class="sub mt" style="text-align:center">Earn some XP and be the first on this week\u2019s board.</p>')};
+const cmScore=(d,me)=>{const dp=S.cm.dp||{},oth=d.a===me?d.b:d.a,mineB=d.a===me?d.a_base:d.b_base,othB=d.a===me?d.b_base:d.a_base,o=dp[oth]||{username:'?',xp:othB};return{o,my:Math.max(0,P.xp-mineB),ot:Math.max(0,(o.xp||0)-othB)}};
+const cmLeft=d=>{const ms=new Date(d.ends_at)-Date.now();if(ms<=0)return null;const h=Math.ceil(ms/36e5);return h>=24?Math.ceil(h/24)+' day'+(Math.ceil(h/24)>1?'s':'')+' left':h+' h left'};
+const cmDuels=()=>{const c=S.cm,me=P.sb.uid,D=c.duels||[],busy=new Set(D.map(d=>d.a===me?d.b:d.a));
+ const inv=D.filter(d=>d.status==='pending'&&d.b===me),sent=D.filter(d=>d.status==='pending'&&d.a===me),act=D.filter(d=>d.status==='active'&&cmLeft(d)),fin=D.filter(d=>d.status==='active'&&!cmLeft(d));
+ const nm=d=>((c.dp||{})[d.a===me?d.b:d.a]||{username:'?'}).username;
+ const bar=(a,b)=>`<div style="height:10px;border-radius:8px;background:var(--line);overflow:hidden;margin-top:6px"><i style="display:block;height:100%;width:${a+b?Math.round(a/(a+b)*100):50}%;background:var(--blue)"></i></div>`;
+ let h=`<div class="card mt" style="background:linear-gradient(135deg,#6D4AE0,#3B7BF0);color:#fff;border:0"><p style="opacity:.9;font-size:14px">⚔️ Friend Duel</p><h2 style="font-size:20px;margin:4px 0">Who earns more XP in 3 days?</h2><p style="opacity:.9;font-size:14px">Challenge someone you follow. Both of you learn, and the higher XP wins.</p></div>`;
+ if(inv.length)h+='<h2 class="h2 mt2">Invitations</h2>'+inv.map(d=>`<div class="card mt"><b>@${nm(d)} challenged you</b><p class="sub">${d.days}-day XP duel</p><div class="row mt" style="gap:8px"><button class="btn" data-a="cmacc" data-id="${d.id}">Accept</button><button class="btn ghost" data-a="cmdecl" data-id="${d.id}">Decline</button></div></div>`).join('');
+ if(act.length)h+='<h2 class="h2 mt2">Active</h2>'+act.map(d=>{const s=cmScore(d,me);return `<div class="card mt"><div class="row sp"><b>You vs @${s.o.username}</b><span class="sub">${cmLeft(d)}</span></div><div class="row sp mt"><span><b>${s.my}</b> XP</span><span><b>${s.ot}</b> XP</span></div>${bar(s.my,s.ot)}<p class="sub mt">${s.my>s.ot?'You are ahead 🔥':s.my<s.ot?'Catch up! Learn now 💪':'All tied!'}</p></div>`}).join('');
+ if(sent.length)h+='<h2 class="h2 mt2">Waiting</h2>'+sent.map(d=>`<div class="card mt row"><div style="flex:1"><b>@${nm(d)}</b><p class="sub">Invitation sent</p></div><button class="btn ghost" style="width:auto;padding:8px 14px" data-a="cmdecl" data-id="${d.id}">Cancel</button></div>`).join('');
+ if(fin.length)h+='<h2 class="h2 mt2">Finished</h2>'+fin.map(d=>{const s=cmScore(d,me),r=s.my>s.ot?'You won 🏆':s.my<s.ot?'You lost':'Draw';return `<div class="card mt row"><div style="flex:1"><b>You vs @${s.o.username}</b><p class="sub">${s.my} – ${s.ot} · ${r}</p></div><button class="btn ghost" style="width:auto;padding:8px 14px" data-a="cmdecl" data-id="${d.id}">Clear</button></div>`}).join('');
+ h+='<h2 class="h2 mt2">Challenge a friend</h2>'+(c.list.length?c.list.map(u=>`<div class="card mt row">${cmAv(u.username)}<div style="flex:1"><b>@${u.username}</b><p class="sub">${u.xp} XP</p></div>${busy.has(u.id)&&D.some(d=>(d.a===u.id||d.b===u.id)&&(d.status==='pending'||cmLeft(d)))?'<span class="sub">In a duel</span>':`<button class="btn" style="width:auto;padding:8px 14px" data-a="cmchal" data-id="${u.id}">⚔️ Challenge</button>`}</div>`).join(''):'<p class="sub mt">Follow friends first (Find tab), then challenge them here.</p>');
+ return h};
+
+
+/* ===== Community 2.0: simple sign-up, hub, profiles, privacy ===== */
+const tierOf=w=>w>=300?['💎','Diamond']:w>=150?['🥇','Gold']:w>=50?['🥈','Silver']:['🥉','Bronze'];
+const CMF='id,username,level,xp,streak,words,week_xp,week_start,public';
+cmLoad=async function(){const c=S.cm;if(!P.sb)return;c.busy=true;render(true);
+ try{const me=await sb('/rest/v1/profiles?id=eq.'+P.sb.uid+'&select=*');c.me=me&&me[0]||null;
+  if(c.me){const f=await sb('/rest/v1/follows?follower=eq.'+P.sb.uid+'&select=following'),ids=f.map(x=>x.following);
+   c.list=ids.length?await sb('/rest/v1/profiles?id=in.('+ids.join(',')+')&select='+CMF):[];
+   c.fers=(await sb('/rest/v1/follows?following=eq.'+P.sb.uid+'&select=follower')).length;syncStats();c.busy=false;c.msg='';render(true);
+   try{c.league=await sb('/rest/v1/profiles?public=eq.true&week_start=eq.'+wkStart()+'&order=week_xp.desc&limit=20&select='+CMF);
+    c.sug=(await sb('/rest/v1/profiles?public=eq.true&order=updated_at.desc&limit=12&select='+CMF)).filter(u=>u.id!==P.sb.uid&&!ids.includes(u.id)).slice(0,6);
+    c.duels=await sb('/rest/v1/duels?select=*&order=created_at.desc&limit=20');const dids=[...new Set(c.duels.map(d=>d.a===P.sb.uid?d.b:d.a))];c.dp={};
+    if(dids.length)(await sb('/rest/v1/profiles?id=in.('+dids.join(',')+')&select=id,username,xp,level')).forEach(u=>c.dp[u.id]=u)}
+   catch(e){c.msg='Run community-upgrade.sql in Supabase to enable League, Duels and privacy.'}
+   render(true);return}
+  c.busy=false;render(true)}catch(e){cmErr(e)}};
+const cmRow2=(u,o)=>{o=o||{};const me=u.id===P.sb.uid,f=S.cm.list.some(x=>x.id===u.id);return `<div class="card mt row" data-a="cmview" data-id="${u.id}" style="cursor:pointer">${o.rank?`<b style="width:28px;text-align:center">${o.rank}</b>`:''}${cmAv(u.username)}<div style="flex:1;min-width:0"><b>@${u.username}${me?' (you)':''}</b><p class="sub">${o.week?(me?weekXp():u.week_xp||0)+' XP this week':(u.level==='adv'?'Advanced':'Basic')+' · '+u.xp+' XP'} · 🔥 ${u.streak||0}</p></div>${me?'':cmFolBtn(u,f)}</div>`};
+cmLeague=()=>{const c=S.cm,L=c.league||[];return `<div class="card mt" style="background:linear-gradient(135deg,#1D4FBF,#3B7BF0);color:#fff;border:0"><p style="opacity:.9;font-size:14px">Weekly League · ${tierOf(weekXp())[0]} ${tierOf(weekXp())[1]}</p><h2 style="font-size:22px;margin:4px 0">${weekXp()} XP this week</h2><p style="opacity:.9;font-size:14px">Resets every Monday. Bronze 0 · Silver 50 · Gold 150 · Diamond 300</p></div>`+(L.length?L.map((u,i)=>cmRow2(u,{rank:['🥇','🥈','🥉'][i]||i+1,week:1})).join(''):'<p class="sub mt" style="text-align:center">No one is on the board yet. Earn XP to be first!</p>')};
+function cmSearch(q){S.cm.q=q;clearTimeout(srchT);q=q.trim().toLowerCase().replace(/[^a-z0-9_]/g,'');const r=()=>document.getElementById('cm-res');if(!q){S.cm.res=[];if(r())r().innerHTML='';return}
+ srchT=setTimeout(async()=>{try{S.cm.res=await sb('/rest/v1/profiles?username=ilike.'+q+'*&select='+CMF+'&limit=20');if(r())r().innerHTML=S.cm.res.length?S.cm.res.map(u=>cmRow2(u)).join(''):'<p class="sub mt" style="text-align:center">No learners found with that name.</p>'}catch(e){S.cm.msg=e.message;render(true)}},350)}
+async function cmAuth(){const c=S.cm,id=$('#cm-e').value.trim().toLowerCase(),p=$('#cm-p').value,up=c.mode==='signup',isU=/^[a-z0-9_]{3,20}$/.test(id);c.email=id;
+ if(!(isU||id.includes('@'))||p.length<6){c.msg='Use a username (a–z, 0–9, _; 3–20 characters) and a password of 6+ characters.';return render(true)}
+ c.busy=true;c.msg='';render(true);
+ try{const j=await sb(up?'/auth/v1/signup':'/auth/v1/token?grant_type=password',{m:'POST',b:{email:isU?id+'@heylearn.user':id,password:p}});
+  if(!j.access_token){c.busy=false;c.msg='Check your email to confirm your account, then log in.';c.mode='login';return render(true)}
+  P.sb={at:j.access_token,rt:j.refresh_token,uid:j.user.id,exp:Date.now()+j.expires_in*1000};save();
+  if(up&&isU)await sb('/rest/v1/profiles',{m:'POST',h:{Prefer:'return=minimal'},b:{id:j.user.id,username:id,level:P.level||'basic',xp:P.xp,streak:streak(),words:P.learned.length}});
+  sfx('ok');cmLoad()}catch(x){c.busy=false;const m=x.message||'';c.msg=/already|registered/i.test(m)?'That username is already taken. Try another one.':/invalid login|credentials/i.test(m)?'Wrong username or password.':m;render(true)}}
+V.comm=()=>{const c=S.cm,inp='class="card mt" style="width:100%;font:inherit;color:var(--ink)"',msg=c.msg?`<p class="sub mt" style="color:var(--red)">${c.msg}</p>`:'';
+ if(!c.modeSet){c.mode='signup';c.modeSet=1}
+ if(!P.sb)return `<div class="view">${head('Community')}<div class="card mt" style="text-align:center;padding:22px 16px"><div style="font-size:54px">🌍</div><h2 class="h2">Learn together</h2><p class="sub mt">Join learners, climb the weekly league and challenge friends to a duel.</p></div><div class="row mt" style="gap:8px"><button class="btn ${c.mode==='signup'?'':'ghost'}" data-a="cmmode2" data-v="signup">Sign up</button><button class="btn ${c.mode==='login'?'':'ghost'}" data-a="cmmode2" data-v="login">Log in</button></div><input id="cm-e" placeholder="Username" autocapitalize="none" autocomplete="username" value="${c.email}" ${inp}><input id="cm-p" type="password" placeholder="Password (6+ characters)" autocomplete="${c.mode==='signup'?'new-password':'current-password'}" ${inp}>${msg}<button class="btn mt2" data-a="cmauth" ${c.busy?'disabled':''}>${c.busy?'Please wait…':c.mode==='signup'?'Create account':'Log in'}</button><p class="sub mt" style="text-align:center">No email needed. Only your username, level, XP and streak are visible to others.</p></div>`;
+ if(!c.me)return `<div class="view">${head('Community')}<div class="card mt"><b>Choose a username</b><p class="sub mt">3–20 characters: a–z, 0–9 and _. Others will see this name.</p></div><input id="cm-u" placeholder="username" autocapitalize="none" ${inp}>${msg}<button class="btn mt2" data-a="cmuser" ${c.busy?'disabled':''}>Continue</button><button class="btn ghost mt" data-a="cmout">Log out</button></div>`;
+ const t=c.tab==='following'||!c.tab?'friends':c.tab,fol=c.list,tr=tierOf(weekXp());
+ const tabs=chips([['friends','Friends'],['league','League'],['duels','Duels'+cmPend()],['me','Me']],t,'cmtab');
+ let body='';
+ if(t==='friends')body=`<input id="cm-q" placeholder="Search a username…" autocapitalize="none" oninput="cmSearch(this.value)" value="${c.q||''}" ${inp}><div id="cm-res">${(c.res||[]).map(u=>cmRow2(u)).join('')}</div>`+
+  (fol.length?`<h2 class="h2 mt2">Following · ${fol.length}</h2>${fol.map(u=>cmRow2(u)).join('')}`:`<div class="card mt" style="text-align:center"><div style="font-size:46px">🤝</div><p class="sub mt">Follow friends to see their progress and challenge them. Invite someone you know!</p><button class="btn mt2" data-a="cmshare">Invite friends</button></div>`)+
+  ((c.sug||[]).length?`<h2 class="h2 mt2">Active learners</h2>${c.sug.map(u=>cmRow2(u)).join('')}`:'');
+ else if(t==='league')body=cmLeague();
+ else if(t==='duels')body=cmDuels();
+ else body=`<div class="card mt" style="text-align:center"><div style="display:flex;justify-content:center">${cmAv(c.me.username)}</div><h2 class="h2 mt">@${c.me.username}</h2><p class="sub">${P.level==='adv'?'Advanced':'Basic'} · ${P.xp} XP · 🔥 ${streak()}</p></div><div class="card mt row" data-a="cmpub" style="cursor:pointer"><div style="flex:1"><b>Show me in the Weekly League</b><p class="sub">Others can find you by username either way.</p></div><span class="toggle ${c.me.public===false?'':'on'}"></span></div><button class="btn ghost mt" data-a="cmshare">Invite friends</button><button class="btn ghost mt" data-a="cmout">Log out</button><button class="btn ghost mt" data-a="cmdel" style="color:var(--red)">Delete my community profile</button>`;
+ return `<div class="view">${head('Community')}<div class="card mt" style="background:linear-gradient(135deg,#1D4FBF,#3B7BF0);color:#fff;border:0"><div class="row" style="gap:12px">${cmAv(c.me.username)}<div style="flex:1;min-width:0"><b style="font-size:18px">@${c.me.username}</b><p style="opacity:.9;font-size:13px">${tr[0]} ${tr[1]} · ${weekXp()} XP this week</p></div></div><div class="row sp mt" style="text-align:center"><div style="flex:1"><b style="font-size:20px">${c.fers||0}</b><p style="opacity:.85;font-size:12px">Followers</p></div><div style="flex:1"><b style="font-size:20px">${fol.length}</b><p style="opacity:.85;font-size:12px">Following</p></div><div style="flex:1"><b style="font-size:20px">${streak()}</b><p style="opacity:.85;font-size:12px">Day streak</p></div></div></div>${tabs}${msg}${body}</div>`};
+V.cmprofile=()=>{const c=S.cm,u=[c.list,c.league,c.res,c.sug].filter(Boolean).flat().find(x=>x.id===c.v);if(!u)return `<div class="view">${head('Profile')}<p class="sub mt">Profile not available.</p></div>`;
+ const me=u.id===P.sb.uid,f=c.list.some(x=>x.id===u.id),tr=tierOf(me?weekXp():u.week_xp||0),busy=(c.duels||[]).some(d=>(d.a===u.id||d.b===u.id)&&(d.status==='pending'||cmLeft(d)));
+ return `<div class="view">${head('Profile')}<div class="card mt" style="text-align:center;padding:22px"><div style="display:flex;justify-content:center">${cmAv(u.username).replace('width:42px;height:42px','width:84px;height:84px').replace('font-size:18px','font-size:38px')}</div><h2 class="h2 mt">@${u.username}${me?' (you)':''}</h2><p class="sub">${u.level==='adv'?'Advanced':'Basic'} level · ${tr[0]} ${tr[1]}</p>${me?'':`<div class="row mt" style="gap:8px;justify-content:center">${cmFolBtn(u,f)}${f&&!busy?`<button class="btn" style="width:auto;padding:8px 14px" data-a="cmchal" data-id="${u.id}">⚔️ Challenge</button>`:''}</div>`}</div><div class="grid2 mt"><div class="card"><p class="sub">Total XP</p><p class="h1 en">${me?P.xp:u.xp}</p></div><div class="card"><p class="sub">Day streak</p><p class="h1 en">${me?streak():u.streak||0}</p></div><div class="card"><p class="sub">Words learned</p><p class="h1 en">${me?P.learned.length:u.words||0}</p></div><div class="card"><p class="sub">XP this week</p><p class="h1 en">${me?weekXp():u.week_xp||0}</p></div></div></div>`};
+
 V.plan=()=>{const g=gList(),gi=g[dayNo()%g.length][1];return `<div class="view">${head('Study Plan')}
 <div class="card mt"><p class="sub">Day ${dayNo()+1} · ${P.level==='adv'?'Advanced':'Basic'} level</p><h2 class="h2">${P.name?P.name+'’s plan for today':'Plan for today'}</h2><p class="sub mt">Each day: 5 new words, one grammar rule and a writing task.</p></div>
 <button class="card mt row" data-a="vsstart"><div class="ico c-purple">📚</div><div style="flex:1"><b>1. Daily Vocabulary</b><p class="sub">5 new words for today</p></div><span>${chk(dn('w'))}</span></button>
@@ -880,6 +959,13 @@ function act(a,d){
  case 'reset':if(confirm('Reset all progress? This cannot be undone.')){const k={name:P.name,level:P.level,obd:1,start:dstr(),photo:P.photo,theme:P.theme,sound:P.sound};Object.keys(P).forEach(x=>delete P[x]);Object.assign(P,k);save();location.reload()}return;
  case 'tour':return tour();
  case 'commopen':go('comm');S.cm.msg='';return(sbOn()&&P.sb)?cmLoad():render(true);
+ case 'cmchal':sb('/rest/v1/duels',{m:'POST',h:{Prefer:'return=minimal'},b:{a:P.sb.uid,b:d.id,a_base:P.xp,days:3}}).then(()=>{sfx('ok');return cmLoad()}).catch(cmErr);return;
+ case 'cmacc':{const du=(S.cm.duels||[]).find(x=>x.id===d.id);if(!du)return;const ob=((S.cm.dp||{})[du.a]||{}).xp;sb('/rest/v1/duels?id=eq.'+d.id,{m:'PATCH',h:{Prefer:'return=minimal'},b:{status:'active',a_base:ob===undefined?du.a_base:ob,b_base:P.xp,ends_at:new Date(Date.now()+du.days*864e5).toISOString()}}).then(()=>{sfx('ok');return cmLoad()}).catch(cmErr);return}
+ case 'cmdecl':sb('/rest/v1/duels?id=eq.'+d.id,{m:'DELETE'}).then(cmLoad).catch(cmErr);return;
+ case 'cmmode2':S.cm.mode=d.v;S.cm.msg='';return render(true);
+ case 'cmview':S.cm.v=d.id;return go('cmprofile');
+ case 'cmpub':{const v=S.cm.me.public===false;S.cm.me.public=v;render(true);sb('/rest/v1/profiles?id=eq.'+P.sb.uid,{m:'PATCH',h:{Prefer:'return=minimal'},b:{public:v}}).then(()=>cmLoad()).catch(e=>{S.cm.me.public=!v;cmErr(e)});return}
+ case 'cmshare':{const t='Join me on HeyLearn and learn English together! My username is @'+(S.cm.me?S.cm.me.username:''),u=location.origin+location.pathname;if(navigator.share)navigator.share({title:'HeyLearn',text:t,url:u}).catch(()=>{});else if(navigator.clipboard)navigator.clipboard.writeText(t+' '+u).then(()=>toast('Invite copied'));return}
  case 'cmmode':S.cm.mode=S.cm.mode==='login'?'signup':'login';S.cm.msg='';return render(true);
  case 'cmauth':return cmAuth();
  case 'cmuser':return cmUser();
