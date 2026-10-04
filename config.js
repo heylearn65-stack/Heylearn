@@ -6,3 +6,4 @@ window.HL_SB = {
   url: "",
   key: ""
 };
+window.HL_SB = { url: "https://আপনার.supabase.co", key: "আপনার-anon-key" };
