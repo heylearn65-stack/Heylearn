@@ -159,6 +159,7 @@ textarea{width:100%;min-height:120px;border:2px solid var(--line);background:var
 
 
 button.card{text-align:left;font:inherit;color:var(--ink);width:100%;cursor:pointer}
+.en,.word{font-family:inherit!important}
 /* ===== Professional theme ===== */
 :root{--bg:#F2F5FB;--ink:#14213D;--mute:#5B6785;--line:#E3E8F2;--blue:#2F66E0;--blue-d:#1D4FBF;--blue-s:#E3ECFD;--green:#1E9E62;--green-s:#DDF4E8;--yellow:#B7791F;--yellow-s:#FDF1D3;--purple:#6D4AE0;--purple-s:#EAE5FD;--red:#D8473F;--red-s:#FCE6E4;--shadow:0 8px 24px rgba(20,33,61,.07),0 1px 3px rgba(20,33,61,.06)}
 [data-theme="dark"]{--bg:#0B1220;--card:#151E36;--ink:#EAF0FF;--mute:#A3B0D0;--line:#243055;--blue:#5B8CFF;--blue-d:#3F6FE8;--blue-s:#1B2A55;--green:#3CC186;--green-s:#143528;--yellow:#F0B94A;--yellow-s:#3A3014;--purple:#9B84FF;--purple-s:#2A2554;--red:#F0716A;--red-s:#3E2020;--shadow:0 8px 24px rgba(0,0,0,.35)}
@@ -175,6 +176,7 @@ button.card{text-align:left;font:inherit;color:var(--ink);width:100%;cursor:poin
 </head>
 <body>
 <div class="phone" id="phone"><div id="app"></div></div>
+<script src="config.js"></script>
 <script>
 /* ---------- data ---------- */
 const W=[
@@ -356,10 +358,10 @@ splash:()=>`<div class="splash"><div class="bubble">Hey</div><h1>HeyLearn</h1><p
 
 home:()=>{const w=P.level==='adv'?(a=>({en:a[0],e:PIC[a[0]]||'📘',ip:'Advanced',pr:'Word',bn:a[1],ex:a[2],exb:''}))(AB[dayNo()%AB.length]):W[new Date().getDate()%W.length];const mk=P.marks.includes(w.en);
  return `<div class="view">
- <div class="row sp"><div><h1 class="h1">${greet()}${P.name?', '+P.name:''} 👋</h1><p class="sub">Keep moving forward, one step at a time</p></div><button class="back" data-a="bell" aria-label="নোটিফিকেশন">🔔</button></div>
+ <div class="row sp"><div><h1 class="h1" style="font-size:22px">${greet()}${P.name?', '+P.name:''} 👋</h1><p class="sub">Keep moving forward, one step at a time</p></div><button class="back" data-a="bell" aria-label="নোটিফিকেশন">🔔</button></div>
  <div class="grid2 mt">
-  <div class="card"><div class="row"><span style="font-size:26px">🔥</span><div><p class="sub">Learning Streak</p><p class="h2">${streak()} days</p></div></div><div class="dotw">${last7().map(x=>`<i class="${x?'on':''}"></i>`).join('')}</div></div>
-  <div class="card row"><div>${ring(lvPct(),'',1)}</div><div><p class="sub">Level Progress</p><p class="sub">${P.xp} XP</p></div></div>
+  <div class="card"><div class="row"><span style="font-size:26px">🔥</span><div><p class="sub">Streak</p><p class="h2">${streak()} ${streak()===1?'day':'days'}</p></div></div><div class="dotw">${last7().map(x=>`<i class="${x?'on':''}"></i>`).join('')}</div></div>
+  <div class="card row"><div>${ring(lvPct(),'',1)}</div><div><p class="sub">Level</p><p class="sub">${P.xp} XP</p></div></div>
  </div>
  ${P.level==='adv'?`<button class="tile mt" data-a="go" data-s="plan" style="background:linear-gradient(135deg,#1D4FBF,#3B7BF0);color:#fff"><span style="color:#DCE8FF">Today's Focus</span><b style="font-size:21px;margin:2px 0">${ADV_T[dayNo()%ADV_T.length][0]} ${ADV_T[dayNo()%ADV_T.length][1]}</b><span style="color:#DCE8FF">5 new words · Grammar · Writing</span><div class="bar mt" style="background:rgba(255,255,255,.3)"><i style="width:${Math.round(['w','wr','g'].filter(k=>dn(k)).length/3*100)}%;background:#fff"></i></div></button>`:`<button class="tile mt" data-a="lesson" style="background:linear-gradient(135deg,#1D4FBF,#3B7BF0);color:#fff">
   <span style="color:#DCE8FF">Today's Lesson</span><b style="font-size:21px;margin:2px 0">Fruits 🍎</b><span style="color:#DCE8FF">6 new words · about 10 min</span>
@@ -484,31 +486,31 @@ done:()=>`<div class="view" style="text-align:center"><div class="confetti mt2">
  <div class="stick"><button class="btn" data-a="story">Read the story</button><button class="btn ghost mt" data-a="lessonq">Practise Again</button></div></div>`,
 
 story:()=>{const hl=t=>FR.reduce((s,w)=>s.replace(new RegExp('\\b('+w.en+'s?)\\b','i'),'<b>$1</b>'),t);
- return `<div class="view">${head('Story')}<h1 class="h1 en">${P.level==='adv'?'Planting Trees, Growing Futures':'Rumi and the Mango Tree'}</h1><p class="sub">বাক্যে ট্যাপ করলে বাংলা অর্থ দেখাবে</p>
+ return `<div class="view">${head('Story')}<h1 class="h1 en">${P.level==='adv'?'Planting Trees, Growing Futures':'Rumi and the Mango Tree'}</h1><p class="sub">Tap a sentence to see the Bangla meaning</p>
  <button class="btn ghost mt" data-a="say" data-t="${STORY.map(s=>s[0]).join(' ')}">🔊 Listen to the full story</button>
  ${STORY.map((s,i)=>`<div class="sent" data-a="tog" data-i="${i}" role="button" tabindex="0">${hl(s[0])}${S.open[i]?`<em>${s[1]}</em>`:''}</div>`).join('')}
  <div class="stick"><button class="btn" data-a="writing">Write It Yourself</button></div></div>`},
 
-writing:()=>{const f=S.fb;return `<div class="view">${head('Write It Yourself ✍️')}${P.level==='adv'?`<p class="sub">আজকের বিষয়: <b>${wrt().t}</b>। ৫–৬টি বাক্যের একটি অনুচ্ছেদ লিখুন।</p>`:`<p class="sub">আপনার প্রিয় ফল নিয়ে ইংরেজিতে ১–২টি বাক্য লিখুন।</p>`}
+writing:()=>{const f=S.fb;return `<div class="view">${head('Write It Yourself ✍️')}${P.level==='adv'?`<p class="sub">Today’s topic: <b>${wrt().t}</b>. Write a paragraph of 5–6 sentences.</p>`:`<p class="sub">আপনার প্রিয় ফল নিয়ে ইংরেজিতে ১–২টি বাক্য লিখুন।</p>`}
  ${P.level==='adv'?`<div class="card mt c-purple"><p class="sub">Structure</p><p class="en">${wrt().h.join('<br>')}</p><p class="sub en mt">${wrt().w}</p></div>`:`<div class="card mt c-purple"><p class="sub">Hint</p><p class="en"><b>I like ___ because it is ___.</b></p><p class="sub en">sweet · juicy · yellow · fresh</p></div>`}
- <textarea id="ta" class="mt" placeholder="এখানে লিখুন…" aria-label="আপনার লেখা">${esc(S.text)}</textarea>
+ <textarea id="ta" class="mt" placeholder="Write here…" aria-label="Your writing">${esc(S.text)}</textarea>
  ${f?`<div class="card mt" style="background:${f.good?'var(--green-s)':'var(--yellow-s)'}"><b>${f.title}</b><p class="sub" style="color:var(--ink)">${f.msg}</p></div>`:''}
  <div class="stick"><button class="btn ghost" data-a="check">Check My Writing</button><button class="btn green mt" data-a="finish">Complete Lesson</button></div></div>`},
 
 listen:()=>{const h=[14,22,10,30,18,26,12,32,20,14,28,16,24,10,30,18,22,12,26,16];
  return `<div class="view">${head('Listening')}
- <div class="card c-blue row"><div class="ico" style="background:var(--card)">🎧</div><p><b>কথোপকথনটি শুনুন, তারপর প্রশ্নের উত্তর দিন।</b></p></div>
+ <div class="card c-blue row"><div class="ico" style="background:var(--card)">🎧</div><p><b>Listen to the conversation, then answer the questions.</b></p></div>
  <div class="card mt"><div class="row"><button class="spk" style="width:54px;height:54px;background:var(--blue);color:#fff" data-a="playconv" aria-label="চালাই">${S.ls.play?'⏸':'▶'}</button><div class="wave">${h.map(x=>`<i style="height:${x}px"></i>`).join('')}</div></div>
- <button class="btn ghost mt" data-a="showtr">${S.ls.show?'লেখা লুকাই':'লেখা দেখি'}</button>
+ <button class="btn ghost mt" data-a="showtr">${S.ls.show?'Hide Text':'Show Text'}</button>
  ${S.ls.show?CONV.map(c=>`<p class="en mt"><b>${c.n}:</b> ${c.t}</p>`).join(''):''}</div>
  <div class="stick"><button class="btn" data-a="lq">Answer the Questions</button></div></div>${nav('practice')}`},
 
 speak:()=>{const s=S.sp,r=s.res,t=SPS[s.i];
  return `<div class="view">${head('Speaking Practice')}
- <div class="card c-blue"><p class="sub" style="color:var(--ink)">মাইকে ট্যাপ করে বাক্যটি স্পষ্ট করে বলুন।</p></div>
+ <div class="card c-blue"><p class="sub" style="color:var(--ink)">Tap the microphone and say the sentence clearly.</p></div>
  <div class="card mt flash"><div class="row" style="justify-content:center"><p class="en" style="font-size:25px;font-weight:800">${t}</p><button class="spk" data-a="say" data-t="${t}" aria-label="শুনি">🔊</button></div></div>
  <div style="text-align:center;margin:26px 0 12px"><button class="mic ${s.state==='listening'?'live':''}" data-a="mic" aria-label="বলুন">🎙️</button>
- <p class="sub mt">${s.state==='listening'?'শুনছি…':s.state==='done'?'আবার বলতে মাইকে ট্যাপ করুন':'ট্যাপ করে বলুন'}</p></div>
+ <p class="sub mt">${s.state==='listening'?'Listening…':s.state==='done'?'Tap the microphone to try again':'Tap to speak'}</p></div>
  ${s.note?`<p class="sub" style="text-align:center">${esc(s.note)}</p>`:''}
  ${r?`<div class="card mt"><div class="row"><div>${ring(r.total,'স্কোর',1)}</div><div style="flex:1">${[['উচ্চারণ',r.pron],['সাবলীলতা',r.flu],['নির্ভুলতা',r.acc]].map(x=>`<div class="row sp sub"><span>${x[0]}</span><b class="en" style="color:var(--green)">${Math.min(100,x[1])}</b></div>`).join('')}</div></div></div>`:''}
  <div class="row mt"><button class="btn ghost" data-a="spagain" style="flex:1">Try Again</button><button class="btn" data-a="spnext" style="flex:1">Next</button></div></div>${nav('practice')}`},
@@ -542,8 +544,12 @@ profile:()=>`<div class="view"><div class="row"><button data-a="photo" aria-labe
   <div class="row sp"><span>⏰ Daily Reminder</span><div class="row" style="gap:8px">${P.remind.on?`<input id="rt" class="sel-time" type="time" value="${P.remind.time}" aria-label="সময়">`:''}<button class="toggle ${P.remind.on?'on':''}" data-a="remind" aria-label="রিমাইন্ডার"></button></div></div>
   <div class="row sp" data-a="go" data-s="help"><span>❓ Help</span><span class="sub">›</span></div>
   <div class="row sp" data-a="go" data-s="about"><span>ℹ️ About</span><span class="sub">›</span></div>
+  <div class="row sp" data-a="snd"><span>🔊 Sounds</span><span class="sub">${P.sound===false?'Off':'On'}</span></div>
+  <div class="row sp" data-a="commopen"><span>👥 Community</span><span class="sub">›</span></div>
+  <div class="row sp" data-a="tour"><span>🎬 App Tour</span><span class="sub">›</span></div>
   <div class="row sp" data-a="backup"><span>💾 Backup Progress</span><span class="sub">›</span></div>
   <div class="row sp" data-a="restore"><span>📥 Restore Progress</span><span class="sub">›</span></div>
+  <div class="row sp" data-a="reset"><span>🗑️ Reset Progress</span><span class="sub">›</span></div>
  </div>
  <div class="card mt"><b>Daily Goal</b><p class="sub">How many minutes will you study daily?</p>${chips([[10,'১০ মিনিট'],[15,'১৫ মিনিট'],[20,'২০ মিনিট'],[30,'৩০ মিনিট']],P.goal,'goal')}</div>
  </div>${nav('profile')}`
@@ -599,10 +605,10 @@ V.wguide=()=>`<div class="view">${head('Writing Guide')}
 GB.forEach(g=>{if(g.t==='Present Tense')g.t='Present Simple';if(g.t==='Past Tense')g.t='Past Simple';if(g.t==='Future Tense')g.t='Future Simple'});
 GB.push(
 {t:'Tense Overview',bn:'১২ প্রকার Tense-এর সারসংক্ষেপ',lv:'b',rule:'প্রতিটি কালের (Present, Past, Future) চারটি রূপ আছে: Simple, Continuous, Perfect, Perfect Continuous। সময়ের সংকেত দেখে রূপ বেছে নিন: now/at this moment → Continuous; since/for → Perfect বা Perfect Continuous; by + ভবিষ্যৎ সময় → Future Perfect।',f:'Present: V1 | am/is/are+V-ing | have/has+V3 | have/has been+V-ing. Past: V2 | was/were+V-ing | had+V3 | had been+V-ing. Future: will+V1 | will be+V-ing | will have+V3 | will have been+V-ing',ex:['She writes daily. She is writing now.','He has written it. He had written it.'],q:[['She ___ a letter now.',['writes','is writing','has written'],1,'now থাকলে Present Continuous।'],['I ___ here since 2020.',['live','have lived','lived'],1,'since থাকলে Present Perfect।'],['By next year, he ___ his degree.',['will finish','will have finished','finishes'],1,'By + ভবিষ্যৎ সময় = Future Perfect।'],['When I reached, the train ___.',['left','had left','was leaving'],1,'আগে ঘটা কাজে Past Perfect।'],['They ___ for two hours.',['wait','have been waiting','will wait'],1,'এখনো চলছে ও সময়কাল দেওয়া আছে।']]},
-{t:'Present Continuous',bn:'In progress বর্তমান',lv:'b',rule:'এখন চলছে এমন কাজ বোঝায়। নির্দিষ্ট ভবিষ্যৎ পরিকল্পনাতেও ব্যবহার হয় (I am leaving tomorrow)। Verb-এর শেষে ing বসে; e দিয়ে শেষ হলে e বাদ যায় (make → making)। know, like, want-এর মতো state verb Continuous-এ হয় না।',f:'S + am/is/are + V-ing',ex:['I am reading a book.','It is raining now.'],q:[['They ___ football now.',['play','are playing','played'],1,'now, তাই Continuous।'],['Look! It ___.',['rains','is raining','rained'],1,'Look! বলছে এখন ঘটছে।'],['He is ___ a letter.',['write','writing','wrote'],1,'is-এর পরে V-ing।'],['I ___ the answer.',['know','am knowing','knew'],0,'know state verb, Continuous হয় না।']]},
+{t:'Present Continuous',bn:'চলমান বর্তমান',lv:'b',rule:'এখন চলছে এমন কাজ বোঝায়। নির্দিষ্ট ভবিষ্যৎ পরিকল্পনাতেও ব্যবহার হয় (I am leaving tomorrow)। Verb-এর শেষে ing বসে; e দিয়ে শেষ হলে e বাদ যায় (make → making)। know, like, want-এর মতো state verb Continuous-এ হয় না।',f:'S + am/is/are + V-ing',ex:['I am reading a book.','It is raining now.'],q:[['They ___ football now.',['play','are playing','played'],1,'now, তাই Continuous।'],['Look! It ___.',['rains','is raining','rained'],1,'Look! বলছে এখন ঘটছে।'],['He is ___ a letter.',['write','writing','wrote'],1,'is-এর পরে V-ing।'],['I ___ the answer.',['know','am knowing','knew'],0,'know state verb, Continuous হয় না।']]},
 {t:'Present Perfect',bn:'পুরাঘটিত বর্তমান',lv:'a',rule:'অতীতে শুরু হয়ে বর্তমানে ফল আছে বা সম্প্রতি শেষ হয়েছে বোঝায়। just, already, yet, ever, never, since, for-এর সাথে ব্যবহার হয়। yesterday, last year, ago-এর মতো নির্দিষ্ট অতীত সময়ের সাথে ব্যবহার করা যায় না।',f:'S + have/has + V3',ex:['She has finished her work.','I have lived here for ten years.'],q:[['She has ___ her work.',['finish','finished','finishing'],1,'has + V3।'],['I have lived here ___ ten years.',['since','for','from'],1,'সময়কালের আগে for।'],['He has ___ gone out.',['just','yesterday','ago'],0,'Present Perfect-এর সাথে just চলে।'],['I ___ him yesterday.',['have seen','saw','have saw'],1,'yesterday-র সাথে Past Simple।']]},
-{t:'Present Perfect Continuous',bn:'In progress পুরাঘটিত বর্তমান',lv:'a',rule:'অতীতে শুরু হয়ে এখনো চলছে এমন কাজে ব্যবহার হয়। সাধারণত since (নির্দিষ্ট সময়ের শুরু) বা for (সময়কাল) থাকে।',f:'S + have/has been + V-ing',ex:['She has been studying since morning.'],q:[['She has been studying ___ morning.',['for','since','from'],1,'নির্দিষ্ট সময়ের শুরুতে since।'],['They ___ waiting for an hour.',['have been','are','were'],0,'for an hour, তাই have been।'],['He has been ___ for two hours.',['work','working','worked'],1,'been-এর পরে V-ing।'],['It ___ raining since last night.',['has been','is','have been'],0,'It singular, তাই has been।']]},
-{t:'Past Continuous',bn:'In progress অতীত',lv:'b',rule:'অতীতের কোনো নির্দিষ্ট সময়ে চলছিল এমন কাজ বোঝায়। দুটি কাজ একসাথে হলে In progress কাজে Past Continuous, বাধা দেওয়া কাজে Past Simple। While-এর পরে সাধারণত Continuous বসে।',f:'S + was/were + V-ing',ex:['I was sleeping when you called.'],q:[['I ___ sleeping when you called.',['am','was','were'],1,'I-এর সাথে was।'],['They ___ playing at 5 pm yesterday.',['was','were','are'],1,'They-এর সাথে were।'],['While she ___ cooking, the phone rang.',['was','were','is'],0,'She-এর সাথে was।'],['He was ___ a song.',['sing','singing','sung'],1,'was + V-ing।']]},
+{t:'Present Perfect Continuous',bn:'চলমান পুরাঘটিত বর্তমান',lv:'a',rule:'অতীতে শুরু হয়ে এখনো চলছে এমন কাজে ব্যবহার হয়। সাধারণত since (নির্দিষ্ট সময়ের শুরু) বা for (সময়কাল) থাকে।',f:'S + have/has been + V-ing',ex:['She has been studying since morning.'],q:[['She has been studying ___ morning.',['for','since','from'],1,'নির্দিষ্ট সময়ের শুরুতে since।'],['They ___ waiting for an hour.',['have been','are','were'],0,'for an hour, তাই have been।'],['He has been ___ for two hours.',['work','working','worked'],1,'been-এর পরে V-ing।'],['It ___ raining since last night.',['has been','is','have been'],0,'It singular, তাই has been।']]},
+{t:'Past Continuous',bn:'চলমান অতীত',lv:'b',rule:'অতীতের কোনো নির্দিষ্ট সময়ে চলছিল এমন কাজ বোঝায়। দুটি কাজ একসাথে হলে চলমান কাজে Past Continuous, বাধা দেওয়া কাজে Past Simple। While-এর পরে সাধারণত Continuous বসে।',f:'S + was/were + V-ing',ex:['I was sleeping when you called.'],q:[['I ___ sleeping when you called.',['am','was','were'],1,'I-এর সাথে was।'],['They ___ playing at 5 pm yesterday.',['was','were','are'],1,'They-এর সাথে were।'],['While she ___ cooking, the phone rang.',['was','were','is'],0,'She-এর সাথে was।'],['He was ___ a song.',['sing','singing','sung'],1,'was + V-ing।']]},
 {t:'Past Perfect',bn:'পুরাঘটিত অতীত',lv:'a',rule:'অতীতের দুটি কাজের মধ্যে যেটি আগে ঘটেছে সেটিতে had + V3, পরেরটিতে Past Simple। before, after, when-এর সাথে ব্যবহার হয়। Past Perfect Continuous (had been + V-ing) অতীতের আগের কোনো সময় থেকে চলতে থাকা কাজ বোঝায়।',f:'had + V3 | had been + V-ing',ex:['The patient had died before the doctor came.'],q:[['The patient ___ before the doctor came.',['died','had died','has died'],1,'আগে ঘটা কাজে had + V3।'],['I had ___ my lunch before he arrived.',['eat','ate','eaten'],2,'had + V3।'],['After she ___ home, she cooked.',['had reached','has reached','reaches'],0,'আগের কাজ, তাই had reached।'],['He had been ___ for two hours when I came.',['wait','waiting','waited'],1,'had been + V-ing।']]},
 {t:'Future Perfect & Continuous',bn:'ভবিষ্যতের Perfect ও Continuous',lv:'a',rule:'Future Continuous (will be + V-ing): ভবিষ্যতের নির্দিষ্ট সময়ে কাজ চলতে থাকবে। Future Perfect (will have + V3): ভবিষ্যতের কোনো সময়ের আগেই কাজ শেষ হবে, প্রায়ই by-এর সাথে।',f:'will be + V-ing | will have + V3',ex:['This time tomorrow, I will be travelling.','By 2030, she will have become a doctor.'],q:[['This time tomorrow, I ___ travelling.',['will be','will have','am'],0,'নির্দিষ্ট ভবিষ্যৎ সময়ে চলবে, তাই will be + V-ing।'],['By 2030, she ___ a doctor.',['will become','will have become','becomes'],1,'By + ভবিষ্যৎ সময় = will have + V3।'],['They will have ___ the work by evening.',['finish','finished','finishing'],1,'will have + V3।'],['At 8 pm, we ___ dinner.',['will be having','had','have'],0,'নির্দিষ্ট সময়ে চলবে, তাই will be + V-ing।']]});
 {const O=['Tense Overview','Present Simple','Present Continuous','Present Perfect','Present Perfect Continuous','Past Simple','Past Continuous','Past Perfect','Future Simple','Future Perfect & Continuous'];const r=g=>{const i=O.indexOf(g.t);return i<0?99:i};GB.sort((a,b)=>r(a)-r(b))}
@@ -628,7 +634,7 @@ V.wbank=()=>P.level==='adv'?`<div class="view">${head('Vocabulary')}<p class="su
 const CONV_B=CONV.slice(),LQ_B=LQ.slice(),STORY_B=STORY.slice();
 const CONV_A=[{n:'Nila',t:'Imran, have you decided what to study after high school?',p:1.3},{n:'Imran',t:'Yes, I want to study engineering, but the competition is intense.',p:.8},{n:'Nila',t:'That is true. How are you preparing for the admission test?',p:1.3},{n:'Imran',t:'I solve past papers daily and I revise my weak topics every weekend.',p:.8},{n:'Nila',t:'Consistency is the key. I would also suggest joining a study group.',p:1.3},{n:'Imran',t:'That is a brilliant idea. Collaboration will certainly improve my confidence.',p:.8}];
 const LQ_A=[['What does Imran want to study?',['Medicine','Engineering','Law','Business'],1],['How does Imran prepare for the test?',['By solving past papers daily','By watching films','By skipping revision','By studying once a month'],0],['What does Nila suggest?',['Changing his subject','Quitting the test','Joining a study group','Studying alone'],2],['According to Nila, what is the key to success?',['Luck','Speed','Money','Consistency'],3]];
-const STORY_A=[['Our village was once covered with dense green forests.','আমাদের গ্রাম একসময় ঘন সবুজ বনে ঢাকা ছিল।'],['However, rapid deforestation has damaged the local environment.','তবে দ্রুত বন উজাড়ের ফলে স্থানীয় পরিবেশ ক্ষতিগ্রস্ত হয়েছে।'],['As a result, the temperature has risen and rainfall has become unpredictable.','ফলস্বরূপ তাপমাত্রা বেড়েছে এবং বৃষ্টিপাত অনিশ্চিত হয়ে পড়েছে।'],['Realising the danger, the students formed a volunteer group.','বিপদ বুঝতে পেরে শিক্ষার্থীরা একটি স্বেচ্ছাসেবী দল Structure করল।'],['Together, they planted more than five hundred saplings along the river.','তারা একসাথে নদীর ধারে পাঁচশোরও বেশি চারাগাছ রোপণ করল।'],['Furthermore, they taught villagers about the importance of conservation.','অধিকন্তু তারা গ্রামবাসীদের সংরক্ষণের গুরুত্ব শেখাল।'],['Nevertheless, protecting nature is a continuous responsibility.','তবুও প্রকৃতি রক্ষা একটি In progress দায়িত্ব।']];
+const STORY_A=[['Our village was once covered with dense green forests.','আমাদের গ্রাম একসময় ঘন সবুজ বনে ঢাকা ছিল।'],['However, rapid deforestation has damaged the local environment.','তবে দ্রুত বন উজাড়ের ফলে স্থানীয় পরিবেশ ক্ষতিগ্রস্ত হয়েছে।'],['As a result, the temperature has risen and rainfall has become unpredictable.','ফলস্বরূপ তাপমাত্রা বেড়েছে এবং বৃষ্টিপাত অনিশ্চিত হয়ে পড়েছে।'],['Realising the danger, the students formed a volunteer group.','বিপদ বুঝতে পেরে শিক্ষার্থীরা একটি স্বেচ্ছাসেবী দল Structure করল।'],['Together, they planted more than five hundred saplings along the river.','তারা একসাথে নদীর ধারে পাঁচশোরও বেশি চারাগাছ রোপণ করল।'],['Furthermore, they taught villagers about the importance of conservation.','অধিকন্তু তারা গ্রামবাসীদের সংরক্ষণের গুরুত্ব শেখাল।'],['Nevertheless, protecting nature is a continuous responsibility.','তবুও প্রকৃতি রক্ষা একটি চলমান দায়িত্ব।']];
 applyLevel=function(){const a=P.level==='adv';SPS.splice(0,SPS.length,...(a?SPS_A:SPS_B));CONV.splice(0,CONV.length,...(a?CONV_A:CONV_B));LQ.splice(0,LQ.length,...(a?LQ_A:LQ_B));STORY.splice(0,STORY.length,...(a?STORY_A:STORY_B))};
 applyLevel();
 {const T=`🔬|Science|hypothesis|অনুমান|Scientists test a hypothesis carefully.;experiment|পরীক্ষা|The experiment was a success.;gravity|মাধ্যাকর্ষণ|Gravity pulls objects downward.;molecule|অণু|Water is made of molecules.;energy|শক্তি|Solar energy is clean.;theory|তত্ত্ব|Einstein proposed a famous theory.;discovery|আবিষ্কার|The discovery changed medicine.;analyse|বিশ্লেষণ করা|Analyse the data carefully.;observation|পর্যবেক্ষণ|Observation is the base of science.;species|প্রজাতি|Many species are endangered.
@@ -714,12 +720,112 @@ function makeEQ(){const B=(P.level==='adv'?AB:BB).filter(w=>PIC[w[0]]);const L=B
  return shuf(L.length>=10?L:B).slice(0,10).map(w=>{const d=shuf(B.filter(x=>PIC[x[0]]!==PIC[w[0]])).slice(0,3).map(x=>PIC[x[0]]);const o=shuf([PIC[w[0]],...d]);return{q:'🎧 শব্দটি শুনে Choose the correct picture',sub:'Tap 🔊 to hear it again',o,a:o.indexOf(PIC[w[0]]),w,say:1,big:1,ear:1}})}
 const autoSay=()=>{const v=S.vq;if(v&&v.mode==='ear'&&v.i<v.qs.length&&v.sel<0){const i=v.i,w=v.qs[i].w[0];setTimeout(()=>{if(S.vq===v&&v.i===i&&S.screen==='vq')sayEn(w)},350)}};
 
+
+/* ===== Sounds, celebration, Daily Vocabulary Session ===== */
+let AC=null;
+function tone(f,t,d,ty,g){AC=AC||new (window.AudioContext||window.webkitAudioContext)();const n=AC.currentTime+t,o=AC.createOscillator(),v=AC.createGain();o.type=ty||'sine';o.frequency.value=f;v.gain.setValueAtTime(.0001,n);v.gain.exponentialRampToValueAtTime(g||.18,n+.02);v.gain.exponentialRampToValueAtTime(.0001,n+d);o.connect(v);v.connect(AC.destination);o.start(n);o.stop(n+d+.05)}
+function sfx(k){if(P.sound===false)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();
+ if(k==='win'){[[523.25,0],[659.25,.13],[783.99,.26],[1046.5,.4]].forEach(x=>tone(x[0],x[1],.55,'triangle',.2));tone(1318.5,.58,.9,'sine',.13);tone(1567.98,.7,1,'sine',.09)}
+ else if(k==='ok'){tone(880,0,.16,'sine',.15);tone(1318.5,.09,.32,'sine',.11)}
+ else if(k==='no'){tone(233,0,.28,'triangle',.1)}
+ if(navigator.vibrate)navigator.vibrate(k==='win'?[40,60,40]:k==='ok'?12:0)}catch(e){}}
+function confetti(){if(!document.getElementById('hl-cf')){const st=document.createElement('style');st.id='hl-cf';st.textContent='@keyframes hlfall{0%{transform:translateY(-10vh) rotate(0);opacity:1}100%{transform:translateY(105vh) rotate(540deg);opacity:.9}}.hl-c{position:fixed;top:0;z-index:100001;pointer-events:none;animation:hlfall linear forwards}';document.head.appendChild(st)}
+ const E=['🎉','✨','⭐','🎊','💫','🌟'];for(let i=0;i<28;i++){const c=document.createElement('span');c.className='hl-c';c.textContent=E[i%E.length];c.style.left=Math.random()*100+'vw';c.style.fontSize=(16+Math.random()*18)+'px';c.style.animationDuration=(1.8+Math.random()*1.6)+'s';c.style.animationDelay=(Math.random()*.5)+'s';document.body.appendChild(c);setTimeout(()=>c.remove(),4200)}}
+function celebrate(){sfx('win');confetti()}
+{const sr=showRes;showRes=function(){const r=sr.apply(this,arguments);celebrate();return r}}
+P.vbox=P.vbox||{};
+const ALLW=()=>BB.concat(AB),wObj=k=>ALLW().find(w=>w[0]===k);
+const vbDue=()=>Object.keys(P.vbox).filter(k=>P.vbox[k].d<=dstr()&&wObj(k)).sort((a,b)=>P.vbox[a].d<P.vbox[b].d?-1:1);
+function vbUpd(k,ok){const b=P.vbox[k]?P.vbox[k].b:0,nb=ok?Math.min(5,b+1):1,g=[1,1,3,7,14,30];P.vbox[k]={b:nb,d:dago(-(ok?g[nb]:1))};if(!P.learned.includes(k))P.learned.push(k);save()}
+function mkQ(w,again){const d=shuf(ALLW().filter(x=>x[1]!==w[1])).slice(0,3).map(x=>x[1]),o=shuf([w[1],...d]);return{w,o,a:o.indexOf(w[1]),again}}
+function vsBuild(extra){const pool=(P.level==='adv'?AB:BB).filter(w=>!P.vbox[w[0]]),tn=todayW().filter(w=>!P.vbox[w[0]]),nw=tn.length?tn:(extra?pool.slice(0,5):[]),du=vbDue().slice(0,5).map(wObj).filter(w=>w&&!nw.includes(w)),it=nw.concat(du);
+ S.vs={ph:it.length?(nw.length?'teach':'quiz'):'empty',i:0,n:nw,qs:it.map(w=>mkQ(w)),qi:0,sel:-1,sc:0,t:it.length,nn:nw.length}}
+const vsSpeak=()=>{const v=S.vs;if(v&&v.ph==='teach'){const w=v.n[v.i][0];setTimeout(()=>{if(S.vs===v&&v.ph==='teach'&&S.screen==='vsess')sayEn(w)},350)}};
+V.vhub=()=>{const nn=todayW().filter(w=>!P.vbox[w[0]]).length,du=vbDue().length,lr=Object.keys(P.vbox).length,ms=Object.values(P.vbox).filter(x=>x.b>=3).length,todo=nn+du;
+ return `<div class="view">${head('Vocabulary')}<div class="card mt" style="background:linear-gradient(135deg,#1D4FBF,#3B7BF0);color:#fff;border:0"><p style="opacity:.85;font-size:14px">Daily Session</p><h2 style="font-size:24px;margin:4px 0">${todo?nn+' new · '+du+' to review':'All done for today 🎉'}</h2><p style="opacity:.85;font-size:14px">${todo?'About 5 minutes. Learn, check, and remember.':'Come back tomorrow, or learn 5 extra words now.'}</p><button class="btn" data-a="${todo?'vsstart':'vsextra'}" style="background:#fff;color:#1D4FBF;margin-top:14px;box-shadow:none">${todo?'Start':'Learn 5 extra words'}</button></div>
+ <div class="grid2 mt"><div class="card"><p class="sub">Words learned</p><p class="h1 en">${lr}</p></div><div class="card"><p class="sub">Mastered</p><p class="h1 en">${ms}</p></div></div>
+ <h2 class="h2 mt2">Practise</h2>
+ ${[['🖼️','Picture Quiz','See a picture, pick the word','pqstart'],['🎧','Listen & Pick','Hear a word, pick the picture','eqstart'],['🧠','Vocabulary Quiz','Meaning and fill-in-the-blank','vqstart']].map(x=>`<button class="card mt row" data-a="${x[3]}"><div class="ico c-blue">${x[0]}</div><div style="flex:1"><b>${x[1]}</b><p class="sub">${x[2]}</p></div><span>›</span></button>`).join('')}
+ <h2 class="h2 mt2">Library</h2><button class="card mt row" data-a="go" data-s="wbank"><div class="ico c-purple">📚</div><div style="flex:1"><b>Word Library</b><p class="sub">Browse all words with pictures</p></div><span>›</span></button></div>`};
+V.vsess=()=>{const v=S.vs;
+ if(v.ph==='empty')return `<div class="view">${head('Vocabulary')}<div class="card mt" style="text-align:center;padding:28px"><div style="font-size:64px">🎉</div><h2 class="h2">You are all caught up</h2><p class="sub mt">No new words or reviews are due right now.</p></div><div class="stick"><button class="btn" data-a="vsextra">Learn 5 extra words</button></div></div>`;
+ if(v.ph==='teach'){const w=v.n[v.i];return `<div class="view">${head('New words · '+(v.i+1)+'/'+v.n.length)}<div class="bar mt"><i style="width:${Math.round(v.i/v.n.length*100)}%"></i></div><div class="card mt" style="text-align:center;padding:26px 16px"><div style="font-size:88px;line-height:1.1">${picOf(w)||'📝'}</div><h2 style="font-size:36px;margin:10px 0 4px">${w[0]}</h2><button class="back" data-a="dsay" data-t="${w[0]}" aria-label="Listen">🔊</button><p style="font-size:24px;color:var(--green);font-weight:700;margin:12px 0 6px">${w[1]}</p><p class="sub en">${w[2]}</p></div><div class="stick"><button class="btn" data-a="vsnext">${v.i+1>=v.n.length?'Start quick check':'Next'}</button></div></div>`}
+ if(v.ph==='quiz'){const q=v.qs[v.qi],p=v.sel,w=q.w;return `<div class="view">${head('Quick check · '+(v.qi+1)+'/'+v.qs.length)}<div class="bar mt"><i style="width:${Math.round(v.qi/v.qs.length*100)}%"></i></div><div class="card mt" style="text-align:center"><div style="font-size:60px">${picOf(w)||''}</div><h2 style="font-size:30px;margin:6px 0">${w[0]}</h2><button class="back" data-a="dsay" data-t="${w[0]}" aria-label="Listen">🔊</button></div><p class="sub mt">What does it mean?</p>${q.o.map((o,k)=>`<button class="opt ${p<0?'':k===q.a?'ok':k===p?'no':''}" data-a="vsans" data-i="${k}" ${p>=0?'disabled':''}>${o}</button>`).join('')}${p>=0?`<div class="stick"><button class="btn" data-a="vsqn">${v.qi+1>=v.qs.length?'Finish':'Next'}</button></div>`:''}</div>`}
+ return `<div class="view">${head('Session complete')}<div class="card mt" style="text-align:center;padding:28px 16px"><div style="font-size:72px">🏆</div><h2 style="font-size:26px;margin:8px 0">Well done!</h2><p class="sub">${v.sc}/${v.t} correct on the first try</p><p class="h2 en mt">+${v.xp} XP</p></div><div class="card mt"><p class="sub">New words learned: <b>${v.nn}</b><br>Streak: <b>${streak()} ${streak()===1?'day':'days'}</b></p></div><div class="stick"><button class="btn" data-a="go" data-s="vhub">Continue</button></div></div>`};
+
+
+/* ===== Usability: Android back button, library search, reset ===== */
+try{history.replaceState({r:0},'');history.pushState({r:1},'')}catch(e){}
+let lastBack=0;
+addEventListener('popstate',()=>{
+ const tr=document.getElementById('hl-tour');if(tr){tr.remove();P.tour=1;save();try{history.pushState({r:1},'')}catch(e){}return}
+ const ob=document.getElementById('hl-ob');if(ob){try{history.pushState({r:1},'')}catch(e){}return}
+ if(S.screen!=='home'&&S.screen!=='splash'){stopAudio();back();try{history.pushState({r:1},'')}catch(e){}}
+ else if(Date.now()-lastBack>2000){lastBack=Date.now();toast('Press back again to exit');try{history.pushState({r:1},'')}catch(e){}}
+});
+function wsearch(q){q=q.trim().toLowerCase();const r=document.getElementById('wres'),l=document.getElementById('wlist');if(!r||!l)return;
+ if(!q){r.innerHTML='';l.style.display='';return}
+ const B=P.level==='adv'?AB:BB,m=B.filter(w=>w[0].toLowerCase().includes(q)||w[1].includes(q));l.style.display='none';
+ r.innerHTML=m.length?m.map(wcard).join(''):'<p class="sub mt" style="text-align:center">No words found.</p>'}
+V.wbank=()=>{const adv=P.level==='adv',B=adv?AB:BB;return `<div class="view">${head('Vocabulary')}<p class="sub mt">${adv?'Advanced':'Basic'} · ${B.length} words${adv?' · '+ADV_T.length+' topics':''}</p><input id="wq" class="card mt" placeholder="Search a word..." oninput="wsearch(this.value)" style="width:100%;font:inherit;color:var(--ink)"><div id="wres"></div><div id="wlist">${adv?advUnits():BB.map(wcard).join('')}</div></div>`};
+
+
+/* ===== Welcome tour ===== */
+function tour(){if(document.getElementById('hl-tour'))return;
+ const SL=[['🖼️','Learn with pictures','See a word, hear it, and remember it with a picture.'],['📅','Just 5 minutes a day','A daily session of new words and quick reviews keeps your streak alive.'],['✏️','Grammar and writing','Clear rules, practice questions and guided writing tasks.'],['🏆','Track your progress','Earn XP, build streaks and watch your level grow.']];
+ let i=0;const o=document.createElement('div');o.id='hl-tour';
+ o.setAttribute('style','position:fixed;inset:0;z-index:100000;background:linear-gradient(160deg,#1D4FBF,#3B7BF0 70%,#6D4AE0);color:#fff;display:flex;flex-direction:column;padding:calc(24px + env(safe-area-inset-top,0px)) 28px calc(28px + env(safe-area-inset-bottom,0px));font-family:inherit');
+ const draw=()=>{const s=SL[i],last=i===SL.length-1;o.innerHTML=`<div style="text-align:right;min-height:34px">${last?'':'<button id="t-skip" style="background:none;border:0;color:#DCE8FF;font:inherit;font-size:16px;cursor:pointer">Skip</button>'}</div><div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:18px"><div style="font-size:110px;line-height:1">${s[0]}</div><h1 style="font-size:30px;margin:0;font-weight:800">${s[1]}</h1><p style="font-size:18px;line-height:1.5;margin:0;max-width:300px;color:#E4ECFF">${s[2]}</p></div><div style="display:flex;justify-content:center;gap:8px;margin-bottom:22px">${SL.map((x,k)=>`<span style="width:${k===i?26:8}px;height:8px;border-radius:8px;background:${k===i?'#fff':'rgba(255,255,255,.4)'};transition:all .25s"></span>`).join('')}</div><button id="t-next" style="border:0;border-radius:16px;padding:15px;font:inherit;font-weight:700;font-size:18px;background:#fff;color:#1D4FBF;cursor:pointer">${last?'Get Started':'Next'}</button>`;
+  const sk=o.querySelector('#t-skip');if(sk)sk.onclick=close;o.querySelector('#t-next').onclick=()=>{sfx('ok');if(last)close();else{i++;draw()}}};
+ const close=()=>{o.remove();P.tour=1;save()};
+ let x0=null;o.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});o.addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(dx<-50&&i<SL.length-1){i++;draw()}else if(dx>50&&i>0){i--;draw()}},{passive:true});
+ document.body.appendChild(o);draw()}
+if(P.obd&&!P.tour)setTimeout(tour,700);
+
+
+/* ===== Community: accounts + follow (Supabase REST) ===== */
+const SB=Object.assign({url:'',key:''},window.HL_SB||{}); // set in config.js
+const sbOn=()=>!!(SB.url&&SB.key);
+async function sbRefresh(){const r=await fetch(SB.url+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{apikey:SB.key,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:P.sb.rt})});const j=await r.json();if(!r.ok||!j.access_token){P.sb=null;save();throw new Error('Session expired. Please log in again.')}P.sb={at:j.access_token,rt:j.refresh_token,uid:j.user.id,exp:Date.now()+j.expires_in*1000};save()}
+async function sb(path,o){o=o||{};if(P.sb&&Date.now()>P.sb.exp-60000)await sbRefresh();
+ const h=Object.assign({apikey:SB.key,'Content-Type':'application/json',Authorization:'Bearer '+(P.sb?P.sb.at:SB.key)},o.h||{});
+ const r=await fetch(SB.url+path,{method:o.m||'GET',headers:h,body:o.b?JSON.stringify(o.b):undefined}),t=await r.text();let j=null;try{j=t?JSON.parse(t):null}catch(e){j=t}
+ if(!r.ok){const m=j&&(j.msg||j.message||j.error_description||j.error)||'Request failed';throw new Error(/duplicate|unique|23505/i.test(JSON.stringify(j))?'That username is already taken.':m)}return j}
+S.cm={tab:'following',mode:'login',busy:false,msg:'',email:'',me:null,list:[],res:[],fers:0,q:''};
+const cmErr=e=>{S.cm.busy=false;S.cm.msg=(e&&e.message)||'Something went wrong. Check your internet connection.';render(true)};
+async function cmLoad(){const c=S.cm;if(!P.sb)return;c.busy=true;render(true);
+ try{const me=await sb('/rest/v1/profiles?id=eq.'+P.sb.uid+'&select=*');c.me=me&&me[0]||null;
+  if(c.me){const f=await sb('/rest/v1/follows?follower=eq.'+P.sb.uid+'&select=following');const ids=f.map(x=>x.following);
+   c.list=ids.length?await sb('/rest/v1/profiles?id=in.('+ids.join(',')+')&select=id,username,level,xp,streak'):[];
+   const g=await sb('/rest/v1/follows?following=eq.'+P.sb.uid+'&select=follower');c.fers=g.length;syncStats()}
+  c.busy=false;c.msg='';render(true)}catch(e){cmErr(e)}}
+let syncT=null;function syncStats(){if(!P.sb||!sbOn())return;clearTimeout(syncT);syncT=setTimeout(()=>{sb('/rest/v1/profiles?id=eq.'+P.sb.uid,{m:'PATCH',h:{Prefer:'return=minimal'},b:{xp:P.xp,streak:streak(),level:P.level||'basic',words:P.learned.length,updated_at:new Date().toISOString()}}).catch(()=>{})},2500)}
+{const a0=addXp;addXp=function(n){const r=a0.apply(this,arguments);syncStats();return r}}
+const cmAv=n=>`<div style="width:42px;height:42px;border-radius:50%;background:var(--blue-s);color:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex:none">${(n||'?')[0].toUpperCase()}</div>`;
+const cmRow=(u,fol)=>`<div class="card mt row">${cmAv(u.username)}<div style="flex:1;min-width:0"><b>@${u.username}</b><p class="sub">${u.level==='adv'?'Advanced':'Basic'} · ${u.xp} XP · 🔥 ${u.streak}</p></div>${u.id===P.sb.uid?'<span class="sub">You</span>':`<button data-a="${fol?'cmunf':'cmfol'}" data-id="${u.id}" style="border:0;border-radius:12px;padding:8px 14px;font:inherit;font-weight:700;cursor:pointer;${fol?'background:var(--blue-s);color:var(--blue)':'background:var(--blue);color:#fff'}">${fol?'Following':'Follow'}</button>`}</div>`;
+V.comm=()=>{if(!sbOn())return `<div class="view">${head('Community')}<div class="card mt" style="text-align:center;padding:26px"><div style="font-size:56px">👥</div><h2 class="h2">Community is not set up yet</h2><p class="sub mt">Accounts and following will work after the one-time online setup (Supabase) is finished and config.js is added to the app.</p></div></div>`;const c=S.cm,inp='class="card mt" style="width:100%;font:inherit;color:var(--ink)"',msg=c.msg?`<p class="sub mt" style="color:var(--red)">${c.msg}</p>`:'';
+ if(!P.sb)return `<div class="view">${head('Community')}<div class="card mt"><b>${c.mode==='login'?'Log in':'Create account'}</b><p class="sub mt">Follow friends and see their progress. We never show your email to others.</p></div><input id="cm-e" type="email" placeholder="Email" value="${c.email}" ${inp}><input id="cm-p" type="password" placeholder="Password (6+ characters)" ${inp}>${msg}<button class="btn mt2" data-a="cmauth" ${c.busy?'disabled':''}>${c.busy?'Please wait…':c.mode==='login'?'Log in':'Sign up'}</button><button class="btn ghost mt" data-a="cmmode">${c.mode==='login'?'New here? Create an account':'Have an account? Log in'}</button></div>`;
+ if(!c.me)return `<div class="view">${head('Community')}<div class="card mt"><b>Choose a username</b><p class="sub mt">3–20 characters: a–z, 0–9 and _. Others will see this name.</p></div><input id="cm-u" placeholder="username" autocapitalize="none" ${inp}>${msg}<button class="btn mt2" data-a="cmuser" ${c.busy?'disabled':''}>Continue</button><button class="btn ghost mt" data-a="cmout">Log out</button></div>`;
+ const fol=new Set(c.list.map(u=>u.id)),board=[...c.list,Object.assign({},c.me,{xp:P.xp,streak:streak()})].sort((a,b)=>b.xp-a.xp);
+ const tabs=chips([['following','Following'],['find','Find'],['me','Me']],c.tab,'cmtab');
+ let body='';
+ if(c.tab==='following')body=c.list.length?`<p class="sub mt">Leaderboard (you and people you follow)</p>${board.map((u,i)=>`<div class="card mt row"><b style="width:26px">${i+1}</b>${cmAv(u.username)}<div style="flex:1"><b>@${u.username}${u.id===P.sb.uid?' (you)':''}</b><p class="sub">${u.xp} XP · 🔥 ${u.streak}</p></div></div>`).join('')}<h2 class="h2 mt2">Following</h2>${c.list.map(u=>cmRow(u,1)).join('')}`:`<div class="card mt" style="text-align:center"><div style="font-size:52px">👥</div><p class="sub mt">You are not following anyone yet. Open <b>Find</b> to search by username.</p></div>`;
+ else if(c.tab==='find')body=`<input id="cm-q" placeholder="Search username…" autocapitalize="none" oninput="cmSearch(this.value)" value="${c.q}" ${inp}><div id="cm-res">${c.res.map(u=>cmRow(u,fol.has(u.id))).join('')}</div>`;
+ else body=`<div class="card mt" style="text-align:center">${cmAv(c.me.username)}<h2 class="h2 mt">@${c.me.username}</h2><p class="sub">Followers <b>${c.fers}</b> · Following <b>${c.list.length}</b></p></div><button class="btn ghost mt" data-a="cmout">Log out</button><button class="btn ghost mt" data-a="cmdel" style="color:var(--red)">Delete my community profile</button>`;
+ return `<div class="view">${head('Community')}${tabs}${msg}${body}</div>`};
+let srchT=null;function cmSearch(q){S.cm.q=q;clearTimeout(srchT);q=q.trim().toLowerCase().replace(/[^a-z0-9_]/g,'');if(!q){S.cm.res=[];const r=document.getElementById('cm-res');if(r)r.innerHTML='';return}
+ srchT=setTimeout(async()=>{try{S.cm.res=await sb('/rest/v1/profiles?username=ilike.'+q+'*&select=id,username,level,xp,streak&limit=20');const fol=new Set(S.cm.list.map(u=>u.id)),r=document.getElementById('cm-res');if(r)r.innerHTML=S.cm.res.length?S.cm.res.map(u=>cmRow(u,fol.has(u.id))).join(''):'<p class="sub mt" style="text-align:center">No users found.</p>'}catch(e){S.cm.msg=e.message;render(true)}},350)}
+async function cmAuth(){const c=S.cm,e=$('#cm-e').value.trim(),p=$('#cm-p').value;c.email=e;if(!e||p.length<6){c.msg='Enter a valid email and a password of 6+ characters.';return render(true)}c.busy=true;c.msg='';render(true);
+ try{const url=c.mode==='login'?'/auth/v1/token?grant_type=password':'/auth/v1/signup';const j=await sb(url,{m:'POST',b:{email:e,password:p}});
+  if(!j.access_token){c.busy=false;c.msg='Check your email to confirm your account, then log in.';c.mode='login';return render(true)}
+  P.sb={at:j.access_token,rt:j.refresh_token,uid:j.user.id,exp:Date.now()+j.expires_in*1000};save();cmLoad()}catch(x){cmErr(x)}}
+async function cmUser(){const c=S.cm,u=$('#cm-u').value.trim().toLowerCase();if(!/^[a-z0-9_]{3,20}$/.test(u)){c.msg='Use 3–20 characters: a–z, 0–9 and _.';return render(true)}c.busy=true;c.msg='';render(true);
+ try{await sb('/rest/v1/profiles',{m:'POST',h:{Prefer:'return=minimal'},b:{id:P.sb.uid,username:u,level:P.level||'basic',xp:P.xp,streak:streak(),words:P.learned.length}});cmLoad()}catch(e){cmErr(e)}}
 V.plan=()=>{const g=gList(),gi=g[dayNo()%g.length][1];return `<div class="view">${head('Study Plan')}
-<div class="card mt"><p class="sub">Day ${dayNo()+1} · ${P.level==='adv'?'Advanced':'Basic'} level</p><h2 class="h2">${P.name?P.name+', আজকের পরিকল্পনা':'আজকের পরিকল্পনা'}</h2><p class="sub mt">প্রতিদিন ৫টি নতুন শব্দ, একটি গ্রামার রুল আর লেখার অনুশীলন।</p></div>
-<button class="card mt row" data-a="go" data-s="dwords"><div class="ico c-purple">📚</div><div style="flex:1"><b>1. Today's Words</b><p class="sub">5 new words for today</p></div><span>${chk(dn('w'))}</span></button>
+<div class="card mt"><p class="sub">Day ${dayNo()+1} · ${P.level==='adv'?'Advanced':'Basic'} level</p><h2 class="h2">${P.name?P.name+'’s plan for today':'Plan for today'}</h2><p class="sub mt">Each day: 5 new words, one grammar rule and a writing task.</p></div>
+<button class="card mt row" data-a="vsstart"><div class="ico c-purple">📚</div><div style="flex:1"><b>1. Daily Vocabulary</b><p class="sub">5 new words for today</p></div><span>${chk(dn('w'))}</span></button>
 <button class="card mt row" data-a="go" data-s="dwrite"><div class="ico c-green">✍️</div><div style="flex:1"><b>2. Writing Practice</b><p class="sub">Write sentences using the words</p></div><span>${chk(dn('wr'))}</span></button>
 <button class="card mt row" data-a="gopen" data-i="${gi}"><div class="ico c-blue">✏️</div><div style="flex:1"><b>3. Grammar: ${GB[gi].t}</b><p class="sub">Read the rule and practise</p></div><span>${chk(dn('g'))}</span></button>
-<button class="card mt row" data-a="pqstart"><div class="ico c-yellow">🖼️</div><div style="flex:1"><b>Picture Quiz</b><p class="sub">Recognise words from pictures</p></div><span>›</span></button>
 <button class="card mt row" data-a="vqstart"><div class="ico c-purple">🧠</div><div style="flex:1"><b>4. Vocabulary Quiz</b><p class="sub">Test the words you learned</p></div><span>${chk(dn('q'))}</span></button>
 <button class="btn mt2" data-a="lvlask">Change name / level</button></div>`};
 V.dwords=()=>`<div class="view">${head('Today\'s Words')}${todayW().map(w=>`<div class="card mt"><div class="row">${picOf(w)?`<div class="ico" style="font-size:44px;width:72px;height:72px;flex:none">${picOf(w)}</div>`:''}<div style="flex:1"><h2 class="h2">${w[0]}</h2><b style="color:var(--green,#2a9d5c)">${w[1]}</b></div><button class="back" data-a="dsay" data-t="${w[0]}" aria-label="শুনি">🔊</button></div><p class="sub mt">${w[2]}</p></div>`).join('')}<div class="stick"><button class="btn" data-a="dlearn">${dn('w')?'আজকের শব্দ শেখা হয়েছে ✅':'শিখেছি ✓ (+10 XP)'}</button></div></div>`;
@@ -731,7 +837,7 @@ V.dwrite=()=>{const w=todayW();return `<div class="view">${head('Writing Practic
 V.grammar=()=>`<div class="view">${head('Grammar')}<p class="sub mt">Read the rule, then practise.</p>${gList().map(x=>`<button class="card mt row" data-a="gopen" data-i="${x[1]}"><div class="ico c-green">✏️</div><div style="flex:1"><b>${x[0].t}</b><p class="sub">${x[0].bn} · ${x[0].q.length} questions${(P.gt||{})[x[0].t]!==undefined?' · ✅ '+P.gt[x[0].t]+'/'+x[0].q.length:''}</p></div><span>›</span></button>`).join('')}</div>`;
 V.grule=()=>{const g=GB[S.g.t];return `<div class="view">${head(g.t)}<div class="card mt"><b>${g.bn}</b><p class="sub mt">${g.rule}</p></div><div class="card mt"><b>Formula</b><p class="sub mt">${g.f}</p></div><div class="card mt"><b>Examples</b><p class="sub mt">${g.ex.join('<br>')}</p></div><div class="stick"><button class="btn" data-a="gstart">Start Practice</button></div></div>`};
 V.gq=()=>{const g=GB[S.g.t],i=S.g.q;if(i>=g.q.length)return `<div class="view">${head('Result')}<div class="card mt" style="text-align:center"><h2 class="h2">${S.g.sc}/${g.q.length}</h2><p class="sub mt">${S.g.sc>=g.q.length-1?'Great! You have understood the rule well.':'Read the rule once more and try again.'}</p></div><div class="stick"><button class="btn" data-a="gstart">Try Again</button></div></div>`;const q=g.q[i],p=S.g.sel;return `<div class="view">${head(g.t+' · '+(i+1)+'/'+g.q.length)}<div class="card mt"><b>${q[0]}</b></div>${q[1].map((o,k)=>`<button class="opt ${p<0?'':k===q[2]?'ok':k===p?'no':''}" data-a="gans" data-i="${k}" ${p>=0?'disabled':''}>${o}</button>`).join('')}${p>=0?`<div class="card mt"><p class="sub">${q[3]}</p></div><div class="stick"><button class="btn" data-a="gnext">${i+1>=g.q.length?'Finish':'Next'}</button></div>`:''}</div>`};
-function onboard(){const o=document.createElement('div');o.id='hl-ob';o.setAttribute('style','position:fixed;inset:0;z-index:100000;background:var(--bg,#F4F6FC);display:flex;flex-direction:column;justify-content:center;gap:14px;padding:28px;overflow:auto');o.innerHTML='<img src="heyLearn-icon-192.png" alt="" style="width:84px;height:84px;border-radius:20px;margin:0 auto"><h1 class="h1" style="text-align:center">Welcome to HeyLearn</h1><p class="sub" style="text-align:center">Become fluent in English, a little every day.</p><input id="ob-n" class="card" placeholder="Your name" maxlength="24" style="font:inherit;width:100%"><button class="card ob" data-l="basic"><b>Basic</b><p class="sub">Step by step, from the start</p></button><button class="card ob" data-l="adv"><b>Advanced</b><p class="sub">Higher-level vocabulary and grammar</p></button>';document.body.appendChild(o);o.querySelector('#ob-n').value=P.name||'';o.querySelectorAll('.ob').forEach(b=>b.onclick=()=>{const n=o.querySelector('#ob-n').value.trim();if(!n){toast('Please enter your name');return}P.name=n;P.level=b.dataset.l;P.start=P.start||dstr();P.obd=1;save();applyLevel();o.remove();go('home',{reset:true})})}
+function onboard(){const o=document.createElement('div');o.id='hl-ob';o.setAttribute('style','position:fixed;inset:0;z-index:100000;background:var(--bg,#F4F6FC);display:flex;flex-direction:column;justify-content:center;gap:14px;padding:28px;overflow:auto');o.innerHTML='<img src="heyLearn-icon-192.png" alt="" style="width:84px;height:84px;border-radius:20px;margin:0 auto"><h1 class="h1" style="text-align:center">Welcome to HeyLearn</h1><p class="sub" style="text-align:center">Become fluent in English, a little every day.</p><input id="ob-n" class="card" placeholder="Your name" maxlength="24" style="font:inherit;width:100%"><button class="card ob" data-l="basic"><b>Basic</b><p class="sub">Step by step, from the start</p></button><button class="card ob" data-l="adv"><b>Advanced</b><p class="sub">Higher-level vocabulary and grammar</p></button>';document.body.appendChild(o);o.querySelector('#ob-n').value=P.name||'';o.querySelectorAll('.ob').forEach(b=>b.onclick=()=>{const n=o.querySelector('#ob-n').value.trim();if(!n){toast('Please enter your name');return}P.name=n;P.level=b.dataset.l;P.start=P.start||dstr();P.obd=1;save();applyLevel();o.remove();go('home',{reset:true});if(!P.tour)setTimeout(tour,400)})}
 if(!P.obd)setTimeout(onboard,50);
 
 /* ---------- render & events ---------- */
@@ -761,20 +867,36 @@ function act(a,d){
  case 'eqstart':S.vq={i:0,sel:-1,sc:0,qs:makeVQ('ear'),mode:'ear'};go('vq',{replace:true});return autoSay();
  case 'pqstart':S.vq={i:0,sel:-1,sc:0,qs:makeVQ('pic'),mode:'pic'};return go('vq',{replace:true});
  case 'vqstart':S.vq={i:0,sel:-1,sc:0,qs:makeVQ()};return go('vq',{replace:true});
- case 'vqans':{const v=S.vq;if(v.sel<0){v.sel=+d.i;const q=v.qs[v.i];if(v.sel===q.a)v.sc++;else q.m=1}return render(true)}
- case 'vqnext':{const v=S.vq;v.i++;v.sel=-1;if(v.i>=v.qs.length){addXp(v.sc*3);addQA(v.sc,v.qs.length);markDone('q')}render(true);return autoSay()}
- case 'backup':{const o=Object.assign({},P);delete o.photo;const c=btoa(unescape(encodeURIComponent(JSON.stringify(o))));if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(c).then(()=>toast('ব্যাকআপ কোড কপি হয়েছে। নিরাপদ জায়গায় রাখুন')).catch(()=>prompt('এই কোডটি কপি করে রাখুন',c));else prompt('এই কোডটি কপি করে রাখুন',c);return}
+ case 'vqans':{const v=S.vq;if(v.sel<0){v.sel=+d.i;const q=v.qs[v.i];if(v.sel===q.a){v.sc++;sfx('ok')}else{q.m=1;sfx('no')}}return render(true)}
+ case 'vqnext':{const v=S.vq;v.i++;v.sel=-1;if(v.i>=v.qs.length){addXp(v.sc*3);addQA(v.sc,v.qs.length);markDone('q');celebrate()}render(true);return autoSay()}
+ case 'backup':{const o=Object.assign({},P);delete o.photo;delete o.sb;const c=btoa(unescape(encodeURIComponent(JSON.stringify(o))));if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(c).then(()=>toast('ব্যাকআপ কোড কপি হয়েছে। নিরাপদ জায়গায় রাখুন')).catch(()=>prompt('এই কোডটি কপি করে রাখুন',c));else prompt('এই কোডটি কপি করে রাখুন',c);return}
  case 'restore':{const c=prompt('ব্যাকআপ কোডটি এখানে পেস্ট করুন');if(!c)return;try{const o=JSON.parse(decodeURIComponent(escape(atob(c.trim()))));if(typeof o!=='object'||!Array.isArray(o.learned))throw 0;Object.keys(P).forEach(k=>delete P[k]);Object.assign(P,o);save();location.reload()}catch(e){toast('কোডটি সঠিক নয়')}return}
- case 'go':if(d.s==='vocab'&&P.level==='adv')return go('wbank');return go(d.s);
+ case 'vsstart':vsBuild(false);go('vsess');return vsSpeak();
+ case 'vsextra':vsBuild(true);go('vsess',{replace:true});return vsSpeak();
+ case 'vsnext':{const v=S.vs;v.i++;if(v.i>=v.n.length)v.ph='quiz';render(true);return vsSpeak()}
+ case 'vsans':{const v=S.vs;if(v.sel>=0)return;v.sel=+d.i;const q=v.qs[v.qi],ok=v.sel===q.a;sfx(ok?'ok':'no');if(!q.again){vbUpd(q.w[0],ok);if(ok)v.sc++;else v.qs.push(mkQ(q.w,1))}return render(true)}
+ case 'vsqn':{const v=S.vs;v.qi++;v.sel=-1;if(v.qi>=v.qs.length){v.ph='done';v.xp=5+v.sc*2;addXp(v.xp);markDone('w');celebrate()}return render(true)}
+ case 'snd':P.sound=P.sound===false?true:false;save();if(P.sound)sfx('ok');return render(true);
+ case 'reset':if(confirm('Reset all progress? This cannot be undone.')){const k={name:P.name,level:P.level,obd:1,start:dstr(),photo:P.photo,theme:P.theme,sound:P.sound};Object.keys(P).forEach(x=>delete P[x]);Object.assign(P,k);save();location.reload()}return;
+ case 'tour':return tour();
+ case 'commopen':go('comm');S.cm.msg='';return(sbOn()&&P.sb)?cmLoad():render(true);
+ case 'cmmode':S.cm.mode=S.cm.mode==='login'?'signup':'login';S.cm.msg='';return render(true);
+ case 'cmauth':return cmAuth();
+ case 'cmuser':return cmUser();
+ case 'cmtab':S.cm.tab=d.k;render(true);return;
+ case 'cmfol':case 'cmunf':{const f=d.a==='cmfol';sb(f?'/rest/v1/follows':'/rest/v1/follows?follower=eq.'+P.sb.uid+'&following=eq.'+d.id,f?{m:'POST',h:{Prefer:'return=minimal'},b:{follower:P.sb.uid,following:d.id}}:{m:'DELETE'}).then(cmLoad).catch(cmErr);return}
+ case 'cmout':P.sb=null;save();S.cm.me=null;S.cm.list=[];S.cm.res=[];S.cm.tab='following';return render(true);
+ case 'cmdel':if(confirm('Delete your community profile? Your followers and following will be removed.'))sb('/rest/v1/profiles?id=eq.'+P.sb.uid,{m:'DELETE'}).then(()=>{S.cm.me=null;S.cm.list=[];render(true)}).catch(cmErr);return;
+ case 'go':if(d.s==='vocab')return go('vhub');return go(d.s);
  case 'photo':{const i=document.createElement('input');i.type='file';i.accept='image/*';i.onchange=()=>{const f=i.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=192;const x=c.getContext('2d');const m=Math.min(im.width,im.height);x.drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,192,192);P.photo=c.toDataURL('image/jpeg',.82);save();render(true)};im.onerror=()=>toast('ছবিটি খোলা যায়নি');im.src=r.result};r.readAsDataURL(f)};i.click();return}
  case 'editname':{const n=prompt('Your name',P.name||'');if(n&&n.trim()){P.name=n.trim().slice(0,24);save();render(true)}return}
  case 'gopen':S.g={t:+d.i,q:0,sel:-1,sc:0};return go('grule');
  case 'gstart':S.g.q=0;S.g.sel=-1;S.g.sc=0;return go('gq',{replace:true});
- case 'gans':if(S.g.sel<0){S.g.sel=+d.i;if(S.g.sel===GB[S.g.t].q[S.g.q][2])S.g.sc++}return render(true);
- case 'gnext':{S.g.q++;S.g.sel=-1;if(S.g.q>=GB[S.g.t].q.length){addXp(S.g.sc*4);P.gt=P.gt||{};const gT=GB[S.g.t].t;P.gt[gT]=Math.max(P.gt[gT]||0,S.g.sc);addQA(S.g.sc,GB[S.g.t].q.length);markDone('g')}return render(true)}
+ case 'gans':if(S.g.sel<0){S.g.sel=+d.i;if(S.g.sel===GB[S.g.t].q[S.g.q][2]){S.g.sc++;sfx('ok')}else sfx('no')}return render(true);
+ case 'gnext':{S.g.q++;S.g.sel=-1;if(S.g.q>=GB[S.g.t].q.length){addXp(S.g.sc*4);P.gt=P.gt||{};const gT=GB[S.g.t].t;P.gt[gT]=Math.max(P.gt[gT]||0,S.g.sc);addQA(S.g.sc,GB[S.g.t].q.length);markDone('g');celebrate()}return render(true)}
  case 'dsay':return sayEn(d.t);
  case 'dlearn':todayW().forEach(w=>{if(!P.learned.includes(w[0]))P.learned.push(w[0])});markDone('w');return render(true);
- case 'wsave':{const v=$('#wr').value.trim();if(v.length<20)return toast('কমপক্ষে কয়েকটি বাক্য লিখুন');P.wr[dstr()]=v;markDone('wr');toast('সংরক্ষিত হয়েছে ✅');return render(true)}
+ case 'wsave':{const v=$('#wr').value.trim();if(v.length<20)return toast('কমপক্ষে কয়েকটি বাক্য লিখুন');P.wr[dstr()]=v;markDone('wr');celebrate();toast('Saved ✅');return render(true)}
  case 'lvlask':P.obd=0;save();return onboard();
  case 'bell':return toast(P.days.includes(dstr())?'চমৎকার! Today’s Lesson শুরু হয়ে গেছে ✅ স্ট্রিক: '+streak()+' days':'You have not studied yet today. Finish one lesson to keep your streak!');
  case 'lesson':return go('lesson');
@@ -812,7 +934,7 @@ function act(a,d){
  case 'story':return go('story');
  case 'writing':return go('writing');
  case 'check':checkWriting();return render(true);
- case 'finish':P.flags.lesson=1;addXp(20);save();return go('progress',{reset:true});
+ case 'finish':P.flags.lesson=1;addXp(20);celebrate();save();return go('progress',{reset:true});
  case 'playconv':if(S.ls.play){try{speechSynthesis.cancel()}catch(e){}S.ls.play=false;return render(true)}
   S.ls.show=false;playLines(CONV);return render(true);
  case 'showtr':S.ls.show=!S.ls.show;return render(true);
@@ -834,7 +956,7 @@ document.addEventListener('change',e=>{if(e.target.id==='rt'){P.remind.time=e.ta
 render();
 
 /* PWA: অফলাইনে চালানোর জন্য */
-const APP_VERSION='1.15.0'; // নতুন আপডেট দিলে শুধু এই সংখ্যাটা বাড়ান (যেমন 1.2.0)
+const APP_VERSION='1.21.1'; // নতুন আপডেট দিলে শুধু এই সংখ্যাটা বাড়ান (যেমন 1.2.0)
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{}));
 }
@@ -885,12 +1007,13 @@ if('serviceWorker' in navigator){
 (function(){
   var box=document.getElementById('hl-install'),go=document.getElementById('hl-go'),x=document.getElementById('hl-x'),sub=document.getElementById('hl-sub');
   var standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
-  if(standalone)return;
-  var dismissed=false;try{dismissed=sessionStorage.getItem('hl-x')==='1'}catch(e){}
+  if(standalone||matchMedia('(display-mode: fullscreen)').matches||matchMedia('(display-mode: minimal-ui)').matches||(document.referrer||'').indexOf('android-app://')===0)return;
+  var dismissed=false;try{dismissed=Date.now()-(+localStorage.getItem('hl-x')||0)<14*864e5}catch(e){}
   if(dismissed)return;
   var ev=null,ua=navigator.userAgent,ios=/iphone|ipad|ipod/i.test(ua);
-  function show(){box.style.display='flex'}
-  x.onclick=function(){box.style.display='none';try{sessionStorage.setItem('hl-x','1')}catch(e){}};
+  var want=false;function show(){want=true}
+  setInterval(function(){var ok=want&&typeof S!=='undefined'&&S.screen==='home'&&!document.getElementById('hl-tour')&&!document.getElementById('hl-ob');box.style.display=ok?'flex':'none'},800);
+  x.onclick=function(){want=false;box.style.display='none';try{localStorage.setItem('hl-x',Date.now())}catch(e){}};
   window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();ev=e;sub.textContent='Add it to your home screen as an app';go.textContent='Install';show()});
   window.addEventListener('appinstalled',function(){box.style.display='none'});
   go.onclick=function(){
@@ -898,8 +1021,8 @@ if('serviceWorker' in navigator){
     else if(ios){alert('আইফোনে: Safari-তে নিচের Share (⬆️) বাটন চাপুন → "Add to Home Screen" চাপুন।')}
     else{alert('Chrome-এর ওপরের ডানের ⋮ মেনু চাপুন → "Install app" বা "Add to Home screen" চাপুন।')}
   };
-  if(ios){sub.textContent='Share ⬆️ → Add to Home Screen';go.textContent='কীভাবে?';setTimeout(show,1500)}
-  else{setTimeout(function(){if(!ev){sub.textContent='মেনু ⋮ → Install app';go.textContent='কীভাবে?';show()}},5000)}
+  if(ios){sub.textContent='Share ⬆️ → Add to Home Screen';go.textContent='How?';setTimeout(show,1500)}
+  else{setTimeout(function(){if(!ev){sub.textContent='Menu ⋮ → Install app';go.textContent='How?';show()}},5000)}
 })();
 </script>
 </body>
